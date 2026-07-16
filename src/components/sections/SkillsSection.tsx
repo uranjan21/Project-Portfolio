@@ -13,7 +13,7 @@ export function SkillsSection({ skills, onEdit }: SkillsSectionProps) {
 
   return (
     <section className="section reveal" id="skills" ref={ref}>
-      <SectionHeader index="03" title="Skill Matrix" onEdit={onEdit} />
+      <SectionHeader index="04" title="Skill Matrix" onEdit={onEdit} />
       <div className="skills-grid">
         {skills.map((skill) => (
           <div className="skill-row" key={skill.id}>

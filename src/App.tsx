@@ -14,12 +14,15 @@ import { Hero } from './components/sections/Hero';
 import { ProjectsSection } from './components/sections/ProjectsSection';
 import { RecordsSection } from './components/sections/RecordsSection';
 import { SkillsSection } from './components/sections/SkillsSection';
+import { WhyMeSection } from './components/sections/WhyMeSection';
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
+import { useAudience } from './hooks/useAudience';
 
 function Site() {
   const { data, error, isAdmin } = usePortfolio();
   const [loginOpen, setLoginOpen] = useState(false);
   const [editing, setEditing] = useState<SectionKey | null>(null);
+  const { audience, select } = useAudience(data?.audiences ?? []);
 
   // Ctrl/Cmd+Shift+A also opens admin login.
   useEffect(() => {
@@ -56,7 +59,19 @@ function Site() {
       <StatusBar initials={initials} />
 
       <main className="content">
-        <Hero profile={data.profile} onEdit={edit('profile')} />
+        <Hero
+          profile={data.profile}
+          audiences={data.audiences}
+          audience={audience}
+          onSelectAudience={select}
+          onEdit={edit('profile')}
+        />
+        <WhyMeSection
+          audience={audience}
+          testimonials={data.testimonials}
+          onEditAudiences={edit('audiences')}
+          onEditTestimonials={edit('testimonials')}
+        />
         <ExperienceSection experiences={data.experiences} onEdit={edit('experiences')} />
         <ProjectsSection projects={data.projects} onEdit={edit('projects')} />
         <SkillsSection skills={data.skills} onEdit={edit('skills')} />

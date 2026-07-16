@@ -361,8 +361,54 @@ button {
   50% { opacity: 0; }
 }
 
+.audience-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  margin-top: 1.6rem;
+}
+
+.audience-switcher .switch-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--ink-dim);
+}
+
+.audience-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  padding: 0.45rem 0.85rem;
+  transition: color 0.2s, border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.audience-btn:hover {
+  color: var(--accent);
+  border-color: var(--line-strong);
+}
+
+.audience-btn.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(56, 189, 248, 0.1);
+  box-shadow: var(--glow);
+}
+
+.pitch-headline {
+  margin-top: 1.6rem;
+  font-size: clamp(1.15rem, 2.8vw, 1.6rem);
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  max-width: 640px;
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+}
+
 .hero .bio {
-  margin-top: 1.4rem;
+  margin-top: 0.9rem;
   max-width: 560px;
   color: var(--ink-dim);
   line-height: 1.7;
@@ -488,6 +534,63 @@ button {
   opacity: 0.45;
   cursor: not-allowed;
   box-shadow: none;
+}
+
+/* ---------- Why Me ---------- */
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.value-card .value-index {
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--accent-2);
+  margin-bottom: 0.6rem;
+}
+
+.value-card h4 {
+  color: var(--ink);
+  font-size: 0.95rem;
+  margin-bottom: 0.45rem;
+}
+
+.value-card p {
+  color: var(--ink-dim);
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+
+.testimonials {
+  margin-top: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.testimonial {
+  width: 100%;
+}
+
+.testimonial p {
+  color: var(--ink);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.testimonial footer {
+  margin-top: 0.7rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+.testimonial footer span {
+  color: var(--ink-dim);
 }
 
 /* ---------- Experience timeline ---------- */

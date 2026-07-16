@@ -1,12 +1,15 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
+import type { Request } from 'express';
 import type { AnswerQuestionRequest, ChatRequest, LoginRequest, UpdateSectionRequest } from '../shared/types';
 import { SECTION_KEYS } from '../shared/types';
 import { issueToken, requireAdmin, verifyPassword } from './auth';
 import { answerQuestion } from './chat';
 import { addFaq, getPortfolio, getQuestions, resolveQuestion, updateSection } from './db';
 import { streamResumePdf } from './resume';
+import { renderRobotsTxt, renderSeoTags, renderSitemapXml } from './seo';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT ?? 5177);
@@ -102,14 +105,30 @@ app.post('/api/admin/questions/:id/dismiss', requireAdmin, (req, res) => {
   res.json(entry);
 });
 
-// --- Static client (production build) ---
+// --- Static client + SEO (production build) ---
+
+// Prefer an explicit SITE_URL for canonical links; fall back to the request host.
+function siteUrl(req: Request): string {
+  return (process.env.SITE_URL ?? `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
+}
+
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain').send(renderRobotsTxt(siteUrl(req)));
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  res.type('application/xml').send(renderSitemapXml(siteUrl(req)));
+});
 
 if (process.env.NODE_ENV === 'production') {
   const distDir = path.resolve(__dirname, '../dist');
-  app.use(express.static(distDir));
-  // SPA fallback for any non-API route.
-  app.get('*', (_req, res) => {
-    res.sendFile(path.join(distDir, 'index.html'));
+  const template = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
+  const SEO_BLOCK = /<!-- seo:start -->[\s\S]*?<!-- seo:end -->/;
+
+  app.use(express.static(distDir, { index: false }));
+  // SPA fallback for any non-API route, with SEO tags rendered from live content.
+  app.get('*', (req, res) => {
+    res.type('html').send(template.replace(SEO_BLOCK, renderSeoTags(getPortfolio(), siteUrl(req))));
   });
 }
 

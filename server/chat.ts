@@ -41,7 +41,7 @@ function matchFaq(message: string): FaqEntry | undefined {
 }
 
 function buildContext(data: PortfolioData): string {
-  const { profile, skills, experiences, projects, education, achievements, faqs } = data;
+  const { profile, audiences, testimonials, skills, experiences, projects, education, achievements, faqs } = data;
   return [
     `Name: ${profile.name}`,
     `Title: ${profile.title}`,
@@ -49,6 +49,12 @@ function buildContext(data: PortfolioData): string {
     `Email: ${profile.email}`,
     `Bio: ${profile.bio}`,
     `Links: ${Object.entries(profile.links).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join(', ')}`,
+    '',
+    'Value proposition by visitor type (use these to answer "why hire you" style questions):',
+    ...audiences.map((a) => `- For ${a.label.toLowerCase()}: ${a.headline} ${a.pitch} Key strengths: ${a.valueProps.join(' ')}`),
+    ...(testimonials.length > 0
+      ? ['', 'Testimonials:', ...testimonials.map((t) => `- "${t.quote}" — ${t.author}, ${t.role}`)]
+      : []),
     '',
     'Skills: ' + skills.map((s) => `${s.name} (${s.category}, ${s.level}/100)`).join('; '),
     '',

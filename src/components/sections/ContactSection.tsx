@@ -9,7 +9,7 @@ export function ContactSection({ profile }: { profile: Profile }) {
 
   return (
     <section className="section reveal" id="contact" ref={ref}>
-      <SectionHeader index="05" title="Open Channel" />
+      <SectionHeader index="06" title="Open Channel" />
       <div className="hud-card contact-panel">
         <h3 style={{ letterSpacing: '0.15em' }}>GET IN TOUCH</h3>
         <p>

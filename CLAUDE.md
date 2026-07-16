@@ -19,7 +19,11 @@ There is no test suite yet. Verify changes with `npm run build` plus manual/curl
 shared/types.ts      All domain + API types. Client and server both import from here —
                      change data shapes HERE first.
 server/
-  index.ts           Express app, routes, rate limit, static serving (prod only)
+  index.ts           Express app, routes, rate limit, static serving (prod only),
+                     robots.txt + sitemap.xml, SEO injection into served HTML
+  seo.ts             Renders <head> SEO block (meta, OG/Twitter, JSON-LD Person/
+                     WebSite/FAQPage) from live db data; replaces the
+                     `<!-- seo:start -->…<!-- seo:end -->` block in index.html
   db.ts              JSON-file datastore (data/db.json, gitignored). In-memory object,
                      synchronous atomic writes. Seeded from seed.ts on first boot.
   seed.ts            Initial portfolio content
@@ -34,7 +38,9 @@ src/
   api/client.ts      Typed fetch wrappers for all endpoints
   components/hud/    Atmosphere: Starfield (canvas parallax), BootScreen, StatusBar,
                      GlitchText, SectionHeader
-  components/sections/  Hero, Experience, Projects, Skills, Records, Contact
+  components/sections/  Hero (audience switcher + pitch), WhyMe (value props +
+                     testimonials), Experience, Projects, Skills, Records, Contact
+  hooks/useAudience.ts  Visitor-type selection: ?for= param → localStorage → first
   components/admin/  schemas.ts (field specs per section) → EditDialog (generic
                      object/collection editor), LoginDialog, AdminBar, QuestionsInbox
   components/chat/   ChatWidget (floating console)
@@ -43,6 +49,17 @@ src/
 ```
 
 ## Key flows
+
+- **Audience targeting**: `data.audiences` (AudiencePitch[]) drives the hero switcher,
+  headline/pitch/CTA, and the Why Me value-prop cards. Selection persists in
+  localStorage and is shareable via `/?for=<id>` (seed ids: recruiter, client,
+  engineer). Adding an audience in admin automatically adds a switcher button.
+- **SEO**: in production the server replaces the `seo:start/seo:end` comment block in
+  `dist/index.html` with tags rendered from live content on every request — title,
+  description, keywords, canonical (`SITE_URL` env or request host), Open Graph,
+  Twitter card, and a JSON-LD `@graph` (Person + WebSite + FAQPage). The FAQ section
+  therefore does double duty: chat-assistant knowledge AND Google rich results. Do not
+  remove the marker comments from index.html; verify they survive `vite build`.
 
 - **Content editing**: every section of `PortfolioData` is edited through the same
   `EditDialog`, driven by `src/components/admin/schemas.ts`. To add a field: extend the

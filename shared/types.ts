@@ -12,6 +12,14 @@ export interface Stat {
   value: string;
 }
 
+export interface SeoMeta {
+  /** <meta name="description"> and og:description. */
+  metaDescription: string;
+  keywords: string[];
+  /** Absolute URL of a social preview image (og:image). Optional. */
+  ogImage?: string;
+}
+
 export interface Profile {
   name: string;
   title: string;
@@ -21,6 +29,31 @@ export interface Profile {
   email: string;
   links: SocialLinks;
   stats: Stat[];
+  seo: SeoMeta;
+}
+
+/**
+ * A pitch targeted at one visitor type (recruiter, freelance client, fellow
+ * engineer, …). Drives the hero headline, the "Why Me" section, and the
+ * primary call to action.
+ */
+export interface AudiencePitch {
+  id: string;
+  /** Switcher button text, e.g. "HIRING FOR A TEAM". */
+  label: string;
+  headline: string;
+  pitch: string;
+  /** "Title — detail" per entry; title is emphasised in the UI. */
+  valueProps: string[];
+  ctaLabel: string;
+  ctaHref: string;
+}
+
+export interface Testimonial {
+  id: string;
+  quote: string;
+  author: string;
+  role: string;
 }
 
 export interface Skill {
@@ -73,6 +106,8 @@ export interface FaqEntry {
 
 export interface PortfolioData {
   profile: Profile;
+  audiences: AudiencePitch[];
+  testimonials: Testimonial[];
   skills: Skill[];
   experiences: Experience[];
   projects: Project[];
@@ -85,6 +120,8 @@ export type SectionKey = keyof PortfolioData;
 
 export const SECTION_KEYS: SectionKey[] = [
   'profile',
+  'audiences',
+  'testimonials',
   'skills',
   'experiences',
   'projects',

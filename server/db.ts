@@ -25,6 +25,8 @@ function load(): Database {
         (parsed.portfolio as unknown as Record<string, unknown>)[key] = seedData[key];
       }
     }
+    // Nested profile fields added after the db file was first written.
+    parsed.portfolio.profile.seo ??= structuredClone(seedData.profile.seo);
     parsed.questions ??= [];
     return parsed;
   }

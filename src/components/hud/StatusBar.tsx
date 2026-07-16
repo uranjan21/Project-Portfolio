@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const NAV_ITEMS = [
+  ['#why-me', 'WHY ME'],
   ['#experience', 'EXPERIENCE'],
   ['#projects', 'PROJECTS'],
   ['#skills', 'SKILLS'],

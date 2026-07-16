@@ -47,7 +47,7 @@ export function ProjectsSection({ projects, onEdit }: ProjectsSectionProps) {
 
   return (
     <section className="section reveal" id="projects" ref={ref}>
-      <SectionHeader index="02" title="Missions // Projects" onEdit={onEdit} />
+      <SectionHeader index="03" title="Missions // Projects" onEdit={onEdit} />
       <div className="projects-grid">
         {projects.map((project, i) => (
           <ProjectCard key={project.id} project={project} index={i} />

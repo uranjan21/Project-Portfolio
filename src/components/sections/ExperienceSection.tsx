@@ -12,7 +12,7 @@ export function ExperienceSection({ experiences, onEdit }: ExperienceSectionProp
 
   return (
     <section className="section reveal" id="experience" ref={ref}>
-      <SectionHeader index="01" title="Experience" onEdit={onEdit} />
+      <SectionHeader index="02" title="Experience" onEdit={onEdit} />
       <div className="timeline">
         {experiences.map((exp) => (
           <div className="timeline-item" key={exp.id}>

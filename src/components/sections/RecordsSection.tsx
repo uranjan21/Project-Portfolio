@@ -15,7 +15,7 @@ export function RecordsSection({ achievements, education, onEditAchievements, on
 
   return (
     <section className="section reveal" id="achievements" ref={ref}>
-      <SectionHeader index="04" title="Records" />
+      <SectionHeader index="05" title="Records" />
       <div className="dual-grid">
         <div className="hud-card">
           <div className="section-header" style={{ marginBottom: '1rem' }}>
