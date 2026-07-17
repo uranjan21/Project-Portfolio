@@ -1,8 +1,37 @@
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { CtaBand } from '../components/sections/CtaBand';
-import { Reveal } from '../components/ui/Reveal';
+import { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useAdminUI } from '../context/AdminUIContext';
 import { usePortfolio } from '../context/PortfolioContext';
 import { usePageMeta } from '../hooks/usePageMeta';
+
+function FaqItem({ question, answer, defaultOpen }: { question: string; answer: string; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen ?? false);
+  return (
+    <div className="faq-item">
+      <button className="faq-q" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+        {question}
+        <motion.span className="faq-plus" animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.2 }}>
+          +
+        </motion.span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.28, ease: 'easeOut' }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div className="faq-answer">{answer}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export function FaqsPage() {
   const { data } = usePortfolio();
@@ -31,16 +60,13 @@ export function FaqsPage() {
       </div>
       <section className="section">
         <div className="container">
-          <Reveal>
-            <div className="faq-list">
-              {data.faqs.map((faq, i) => (
-                <details className="faq-item" key={faq.id} open={i === 0}>
-                  <summary>{faq.question}</summary>
-                  <div className="faq-answer">{faq.answer}</div>
-                </details>
-              ))}
-            </div>
-          </Reveal>
+          <Stagger className="faq-list">
+            {data.faqs.map((faq, i) => (
+              <StaggerItem key={faq.id}>
+                <FaqItem question={faq.question} answer={faq.answer} defaultOpen={i === 0} />
+              </StaggerItem>
+            ))}
+          </Stagger>
         </div>
       </section>
       <CtaBand />

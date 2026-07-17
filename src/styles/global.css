@@ -69,6 +69,51 @@ img {
   padding: 0 1.4rem;
 }
 
+/* ---------- Ambience & HUD chrome ---------- */
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 70;
+  background: linear-gradient(to right, var(--amber), var(--amber-deep));
+  transform-origin: 0 50%;
+}
+
+.ambient {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(72px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.ambient.a1 {
+  width: 440px;
+  height: 440px;
+  background: rgba(234, 166, 60, 0.16);
+  top: -140px;
+  right: -120px;
+  animation: drift 22s ease-in-out infinite alternate;
+}
+
+.ambient.a2 {
+  width: 400px;
+  height: 400px;
+  background: rgba(53, 66, 45, 0.12);
+  bottom: -160px;
+  left: -140px;
+  animation: drift 27s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes drift {
+  to {
+    transform: translate(46px, 60px) scale(1.18);
+  }
+}
+
 .section {
   padding: 4.5rem 0;
 }
@@ -164,11 +209,20 @@ img {
   justify-content: center;
   font-size: 0.95rem;
   flex-shrink: 0;
+  transition: transform 0.22s;
 }
 
 .pill:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow);
+}
+
+.pill:hover .arrow {
+  transform: translateX(3px) rotate(-20deg);
+}
+
+.pill:active {
+  transform: translateY(-1px) scale(0.97);
 }
 
 .pill.dark {
@@ -279,21 +333,39 @@ img {
 }
 
 .nav-links a {
+  position: relative;
   font-size: 0.92rem;
   font-weight: 500;
   color: var(--muted);
   padding: 0.25rem 0;
-  border-bottom: 2px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
+  transition: color 0.2s;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--amber);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
 }
 
 .nav-links a:hover {
   color: var(--ink);
 }
 
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  transform: scaleX(1);
+}
+
 .nav-links a.active {
   color: var(--ink);
-  border-bottom-color: var(--amber);
 }
 
 .nav-burger {
@@ -560,6 +632,10 @@ img {
   gap: 2.6rem;
   width: max-content;
   animation: marquee 26s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
 }
 
 .marquee-track span {
@@ -858,7 +934,13 @@ img {
 }
 
 .tool-tile .tool-emoji {
+  display: inline-block;
   font-size: 1.9rem;
+  transition: transform 0.25s;
+}
+
+.tool-tile:hover .tool-emoji {
+  transform: scale(1.2) rotate(-8deg);
 }
 
 .tool-tile .tool-level {
@@ -1282,34 +1364,37 @@ img {
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   padding: 0.4rem 1.4rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.faq-item summary {
+.faq-item:hover {
+  border-color: var(--amber);
+  box-shadow: var(--shadow);
+}
+
+.faq-q {
+  width: 100%;
+  background: none;
+  border: none;
   cursor: pointer;
+  font-family: var(--sans);
   font-weight: 700;
   font-size: 1rem;
+  color: var(--ink);
+  text-align: left;
   padding: 0.9rem 0;
-  list-style: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
 
-.faq-item summary::-webkit-details-marker {
-  display: none;
-}
-
-.faq-item summary::after {
-  content: '+';
+.faq-plus {
   font-size: 1.4rem;
   font-weight: 500;
   color: var(--amber-deep);
-  transition: transform 0.2s;
-}
-
-.faq-item[open] summary::after {
-  transform: rotate(45deg);
+  line-height: 1;
+  display: inline-block;
 }
 
 .faq-item .faq-answer {
@@ -1704,6 +1789,28 @@ img {
   transition: transform 0.2s;
 }
 
+.chat-fab::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--amber);
+  animation: fab-pulse 2.6s ease-out infinite;
+}
+
+@keyframes fab-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  70%,
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
 .chat-fab:hover {
   transform: scale(1.08);
 }
@@ -1883,6 +1990,53 @@ img {
   font-size: 0.8rem;
 }
 
+/* ---------- Ventures (Beyond the code) ---------- */
+
+.venture-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.venture-card h3 {
+  font-size: 1.12rem;
+  font-weight: 700;
+}
+
+.venture-card .venture-tagline {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--amber-deep);
+  font-size: 0.98rem;
+}
+
+.venture-card p:not(.venture-tagline) {
+  color: var(--muted);
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.status-chip {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: var(--amber-soft);
+  color: var(--amber-deep);
+  border: 1px dashed var(--amber-deep);
+}
+
+.status-chip.live {
+  background: var(--green-soft);
+  color: var(--green-deep);
+  border: 1px solid var(--green);
+}
+
 /* ---------- Misc ---------- */
 
 .loading-screen {
@@ -1912,32 +2066,16 @@ img {
   line-height: 1;
 }
 
-/* Reveal on scroll */
-.reveal {
-  opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  .reveal {
-    transition: none;
-    opacity: 1;
-    transform: none;
-  }
-
   .marquee-track,
   .spin-badge svg,
-  .orbit-chip {
+  .orbit-chip,
+  .ambient,
+  .chat-fab::after {
     animation: none;
   }
 }

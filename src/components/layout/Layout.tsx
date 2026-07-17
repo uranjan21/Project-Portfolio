@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Outlet, useLocation } from 'react-router-dom';
 import type { SectionKey } from '../../../shared/types';
 import { AdminBar } from '../admin/AdminBar';
 import { EditDialog } from '../admin/EditDialog';
 import { LoginDialog } from '../admin/LoginDialog';
 import { ChatWidget } from '../chat/ChatWidget';
+import { ScrollProgress } from '../ui/ScrollProgress';
 import { AdminUIContext } from '../../context/AdminUIContext';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Footer } from './Footer';
@@ -51,9 +52,20 @@ export function Layout() {
 
   return (
     <AdminUIContext.Provider value={adminUI}>
+      <ScrollProgress />
+      <div className="ambient a1" aria-hidden="true" />
+      <div className="ambient a2" aria-hidden="true" />
       <Nav />
       <main>
-        <Outlet />
+        {/* Re-keying on pathname gives every page an entrance transition. */}
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.32, ease: 'easeOut' }}
+        >
+          <Outlet />
+        </motion.div>
       </main>
       <Footer />
 

@@ -41,8 +41,11 @@ src/
   context/PortfolioContext.tsx  Data fetch + admin token (sessionStorage) + saveSection
   context/AdminUIContext.tsx    editFor(section) → edit handler when admin; openLogin
   pages/             One file per route; pages compose cards + sections
-  components/ui/     Pill (signature CTA), SectionHead, Reveal, RichText (blank line =
-                     paragraph, "## " heading, "- " bullets)
+  components/ui/     Pill (signature CTA), SectionHead, RichText (blank line =
+                     paragraph, "## " heading, "- " bullets), and the motion kit:
+                     Reveal/Stagger/StaggerItem (scroll reveals), CountUp (stats),
+                     ScrollProgress (top bar). App is wrapped in MotionConfig
+                     reducedMotion="user" — all animation respects OS settings.
   components/cards/  ServiceCard, ProjectCard, BlogCard, TestimonialCard
   components/sections/  JourneyCards, ToolsGrid, PricingBand, CtaBand (shared by pages)
   components/admin/  schemas.ts (field specs per section) → EditDialog (generic
@@ -68,6 +71,10 @@ src/
 - **Empty-until-real sections**: pricing and testimonials render nothing to visitors
   while empty (admins see an edit prompt). Keep it that way — no fabricated rates or
   quotes.
+- **Ventures ("Beyond the Code")**: `data.ventures` seeds the owner's upcoming
+  journeys (creator / founder / SaaS) as coming-soon cards on Home. Flipping `live`
+  + adding a `url` in admin turns a card into an outbound link — this is the
+  extension point for future life chapters.
 - **Chat**: `POST /api/chat` — FAQ match → OpenAI (only if `OPENAI_API_KEY`) →
   unanswered questions stored + emailed; answering from the admin inbox can promote to
   FAQ. FAQ also feeds Google rich results on /faqs.

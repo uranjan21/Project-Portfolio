@@ -2,8 +2,9 @@ import { RESUME_URL } from '../api/client';
 import { CtaBand } from '../components/sections/CtaBand';
 import { JourneyCards } from '../components/sections/JourneyCards';
 import { ToolsGrid } from '../components/sections/ToolsGrid';
+import { CountUp } from '../components/ui/CountUp';
 import { Pill } from '../components/ui/Pill';
-import { Reveal } from '../components/ui/Reveal';
+import { Reveal, Stagger, StaggerItem } from '../components/ui/Reveal';
 import { SectionHead } from '../components/ui/SectionHead';
 import { useAdminUI } from '../context/AdminUIContext';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -39,7 +40,9 @@ export function AboutPage() {
           <div className="stats-row light">
             {profile.stats.map((stat) => (
               <div className="stat" key={stat.label}>
-                <div className="value">{stat.value}</div>
+                <div className="value">
+                  <CountUp value={stat.value} />
+                </div>
                 <div className="label">{stat.label}</div>
               </div>
             ))}
@@ -105,18 +108,20 @@ export function AboutPage() {
                 }
                 onEdit={editFor('achievements')}
               />
-              <div className="grid-3">
-                {data.achievements.map((a) => (
-                  <div className="card" key={a.id}>
+            </Reveal>
+            <Stagger className="grid-3">
+              {data.achievements.map((a) => (
+                <StaggerItem key={a.id}>
+                  <div className="card">
                     <div className="value-index" style={{ color: 'var(--amber-deep)', fontWeight: 700 }}>
                       {a.year}
                     </div>
                     <h4 style={{ margin: '0.3rem 0 0.4rem' }}>{a.title}</h4>
                     <p style={{ color: 'var(--muted)', fontSize: '0.92rem' }}>{a.description}</p>
                   </div>
-                ))}
-              </div>
-            </Reveal>
+                </StaggerItem>
+              ))}
+            </Stagger>
           </div>
         </section>
       )}

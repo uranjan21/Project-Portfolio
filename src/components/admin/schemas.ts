@@ -118,6 +118,21 @@ export const SECTION_SCHEMAS: Record<SectionKey, SectionSchema> = {
       { key: 'highlighted', label: 'Highlighted plan?', type: 'boolean', hint: 'The emphasised (amber) card — pick one' },
     ],
   },
+  ventures: {
+    kind: 'collection',
+    section: 'ventures',
+    title: 'Edit ventures (Beyond the code)',
+    idPrefix: 'vnt',
+    labelKey: 'title',
+    fields: [
+      { key: 'title', label: 'Title', type: 'text', hint: 'e.g. The Creator Journey' },
+      { key: 'emoji', label: 'Icon emoji', type: 'text' },
+      { key: 'tagline', label: 'Tagline', type: 'text' },
+      { key: 'description', label: 'Description', type: 'textarea' },
+      { key: 'live', label: 'Launched?', type: 'boolean', hint: 'Off = shown as “coming soon”' },
+      { key: 'url', label: 'Link when live', type: 'text', hint: 'Channel / product URL' },
+    ],
+  },
   blogPosts: {
     kind: 'collection',
     section: 'blogPosts',

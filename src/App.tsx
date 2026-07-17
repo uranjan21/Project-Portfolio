@@ -1,3 +1,4 @@
+import { MotionConfig } from 'framer-motion';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { PortfolioProvider } from './context/PortfolioContext';
@@ -18,7 +19,8 @@ import { TestimonialsPage } from './pages/TestimonialsPage';
 export default function App() {
   return (
     <PortfolioProvider>
-      <BrowserRouter>
+      <MotionConfig reducedMotion="user">
+        <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<HomePage />} />
@@ -36,7 +38,8 @@ export default function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+        </BrowserRouter>
+      </MotionConfig>
     </PortfolioProvider>
   );
 }

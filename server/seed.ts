@@ -412,6 +412,40 @@ export const seedData: PortfolioData = {
       tags: ['AI', 'Product', 'Engineering'],
     },
   ],
+  // "Beyond the code" — announced journeys; flip `live: true` and add a URL
+  // from admin mode when each one launches.
+  ventures: [
+    {
+      id: 'vnt-creator',
+      title: 'The Creator Journey',
+      emoji: '🎥',
+      tagline: 'Documenting how software really gets built',
+      description:
+        'Videos and posts from the trenches — freelancing, shipping products, and the engineering lessons ' +
+        'nobody puts in tutorials. First episodes in the works.',
+      live: false,
+    },
+    {
+      id: 'vnt-founder',
+      title: 'The Founder Journey',
+      emoji: '🚀',
+      tagline: 'Building products of my own',
+      description:
+        'Applying everything client work taught me to products I own end-to-end — from problem hunt to ' +
+        'launch. Building in public once the first one is ready to show.',
+      live: false,
+    },
+    {
+      id: 'vnt-saas',
+      title: 'SaaS, End to End',
+      emoji: '🧰',
+      tagline: 'Designed, built, launched, sold',
+      description:
+        'A portfolio of small, sharp SaaS tools — each one designed, engineered, marketed and monetised ' +
+        'solo. The full lifecycle, documented.',
+      live: false,
+    },
+  ],
   education: [
     {
       id: 'edu-1',

@@ -9,13 +9,24 @@ import { CtaBand } from '../components/sections/CtaBand';
 import { JourneyCards } from '../components/sections/JourneyCards';
 import { PricingBand } from '../components/sections/PricingBand';
 import { ToolsGrid } from '../components/sections/ToolsGrid';
+import { CountUp } from '../components/ui/CountUp';
 import { Pill } from '../components/ui/Pill';
-import { Reveal } from '../components/ui/Reveal';
+import { Reveal, Stagger, StaggerItem } from '../components/ui/Reveal';
 import { SectionHead } from '../components/ui/SectionHead';
 import { useAdminUI } from '../context/AdminUIContext';
 import { usePortfolio } from '../context/PortfolioContext';
 import { useAudience } from '../hooks/useAudience';
 import { usePageMeta } from '../hooks/usePageMeta';
+
+const HERO_STAGGER = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+};
+
+const HERO_ITEM = {
+  hidden: { opacity: 0, y: 22 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut' as const } },
+};
 
 function SpinBadge() {
   return (
@@ -56,15 +67,22 @@ export function HomePage() {
     <>
       {/* ---------- Hero ---------- */}
       <section className="container hero">
-        <div>
-          <span className="hero-badge">Hello There! 👋</span>
-          <h1>
+        <motion.div variants={HERO_STAGGER} initial="hidden" animate="show">
+          <motion.span className="hero-badge" variants={HERO_ITEM}>
+            Hello There! 👋
+          </motion.span>
+          <motion.h1 variants={HERO_ITEM}>
             I’m <span className="accent">{profile.name}</span>,<br />
             {profile.title} based in {profile.location.split('·')[0].trim()}.
-          </h1>
+          </motion.h1>
 
           {data.audiences.length > 0 && (
-            <div className="audience-switcher" role="group" aria-label="Choose what you're here for">
+            <motion.div
+              className="audience-switcher"
+              role="group"
+              aria-label="Choose what you're here for"
+              variants={HERO_ITEM}
+            >
               <span className="switch-label">You are…</span>
               {data.audiences.map((a) => (
                 <button
@@ -80,7 +98,7 @@ export function HomePage() {
                   ✎
                 </button>
               )}
-            </div>
+            </motion.div>
           )}
 
           {audience ? (
@@ -88,7 +106,7 @@ export function HomePage() {
               key={audience.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.3, delay: 0.25 }}
             >
               <p className="pitch-line">{audience.headline}</p>
               <p className="lede">{audience.pitch}</p>
@@ -124,9 +142,14 @@ export function HomePage() {
               </div>
             </>
           )}
-        </div>
+        </motion.div>
 
-        <div className="hero-visual">
+        <motion.div
+          className="hero-visual"
+          initial={{ opacity: 0, scale: 0.88 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7, ease: 'easeOut', delay: 0.15 }}
+        >
           <div className="blob">
             {profile.photoUrl ? (
               <img src={profile.photoUrl} alt={profile.name} />
@@ -153,7 +176,7 @@ export function HomePage() {
               {chip}
             </span>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* ---------- Marquee ---------- */}
@@ -187,12 +210,14 @@ export function HomePage() {
               }
               onEdit={editFor('services')}
             />
-            <div className="grid-3">
-              {data.services.slice(0, 3).map((service) => (
-                <ServiceCard key={service.id} service={service} />
-              ))}
-            </div>
           </Reveal>
+          <Stagger className="grid-3">
+            {data.services.slice(0, 3).map((service) => (
+              <StaggerItem key={service.id}>
+                <ServiceCard service={service} />
+              </StaggerItem>
+            ))}
+          </Stagger>
         </div>
       </section>
 
@@ -224,7 +249,9 @@ export function HomePage() {
                 <div className="stats-row">
                   {profile.stats.map((stat) => (
                     <div className="stat" key={stat.label}>
-                      <div className="value">{stat.value}</div>
+                      <div className="value">
+                        <CountUp value={stat.value} />
+                      </div>
                       <div className="label">{stat.label}</div>
                     </div>
                   ))}
@@ -255,21 +282,23 @@ export function HomePage() {
                 }
                 onEdit={editFor('audiences')}
               />
-              <div className="grid-2">
-                {audience.valueProps.map((prop, i) => {
-                  const sep = prop.indexOf(' — ');
-                  const title = sep === -1 ? '' : prop.slice(0, sep);
-                  const detail = sep === -1 ? prop : prop.slice(sep + 3);
-                  return (
-                    <div className="card value-card" key={`${audience.id}-${i}`}>
+            </Reveal>
+            <Stagger className="grid-2" key={audience.id}>
+              {audience.valueProps.map((prop, i) => {
+                const sep = prop.indexOf(' — ');
+                const title = sep === -1 ? '' : prop.slice(0, sep);
+                const detail = sep === -1 ? prop : prop.slice(sep + 3);
+                return (
+                  <StaggerItem key={`${audience.id}-${i}`}>
+                    <div className="card value-card">
                       <div className="value-index">No. {String(i + 1).padStart(2, '0')}</div>
                       {title && <h4>{title}</h4>}
                       <p>{detail}</p>
                     </div>
-                  );
-                })}
-              </div>
-            </Reveal>
+                  </StaggerItem>
+                );
+              })}
+            </Stagger>
           </div>
         </section>
       )}
@@ -312,12 +341,14 @@ export function HomePage() {
               }
               onEdit={editFor('projects')}
             />
-            <div className="grid-2">
-              {data.projects.slice(0, 2).map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
           </Reveal>
+          <Stagger className="grid-2">
+            {data.projects.slice(0, 2).map((project) => (
+              <StaggerItem key={project.id}>
+                <ProjectCard project={project} />
+              </StaggerItem>
+            ))}
+          </Stagger>
         </div>
       </section>
 
@@ -339,6 +370,49 @@ export function HomePage() {
           </Reveal>
         </div>
       </section>
+
+      {/* ---------- Beyond the code (ventures) ---------- */}
+      {data.ventures.length > 0 && (
+        <section className="section" style={{ paddingTop: 0 }}>
+          <div className="container">
+            <Reveal>
+              <SectionHead
+                eyebrow="Beyond the Code"
+                title={
+                  <>
+                    More sides of <span className="accent">the same story</span>
+                  </>
+                }
+                onEdit={editFor('ventures')}
+              />
+            </Reveal>
+            <Stagger className="grid-3">
+              {data.ventures.map((venture) => (
+                <StaggerItem key={venture.id}>
+                  <div className="card venture-card">
+                    <span className={`status-chip${venture.live ? ' live' : ''}`}>
+                      {venture.live ? 'LIVE' : 'COMING SOON'}
+                    </span>
+                    <div className="icon-circle">{venture.emoji}</div>
+                    <h3>{venture.title}</h3>
+                    <p className="venture-tagline">{venture.tagline}</p>
+                    <p>{venture.description}</p>
+                    {venture.live && venture.url ? (
+                      <a className="more-link" href={venture.url} target="_blank" rel="noreferrer">
+                        Explore <span className="tick">→</span>
+                      </a>
+                    ) : (
+                      <Link className="more-link" to="/coming-soon">
+                        Get notified <span className="tick">→</span>
+                      </Link>
+                    )}
+                  </div>
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
+        </section>
+      )}
 
       {/* ---------- Pricing (hidden until plans are published) ---------- */}
       <PricingBand pricing={data.pricing} />
@@ -364,19 +438,21 @@ export function HomePage() {
                 }
                 onEdit={editFor('testimonials')}
               />
-              {data.testimonials.length === 0 ? (
-                <div className="empty-note">
-                  No testimonials yet — add real client quotes from the Edit button. Visitors won’t
-                  see this section until you do.
-                </div>
-              ) : (
-                <div className="grid-3">
-                  {data.testimonials.slice(0, 3).map((t) => (
-                    <TestimonialCard key={t.id} testimonial={t} />
-                  ))}
-                </div>
-              )}
             </Reveal>
+            {data.testimonials.length === 0 ? (
+              <div className="empty-note">
+                No testimonials yet — add real client quotes from the Edit button. Visitors won’t
+                see this section until you do.
+              </div>
+            ) : (
+              <Stagger className="grid-3">
+                {data.testimonials.slice(0, 3).map((t) => (
+                  <StaggerItem key={t.id}>
+                    <TestimonialCard testimonial={t} />
+                  </StaggerItem>
+                ))}
+              </Stagger>
+            )}
           </div>
         </section>
       )}
@@ -400,12 +476,14 @@ export function HomePage() {
                 }
                 onEdit={editFor('blogPosts')}
               />
-              <div className="grid-3">
-                {latestPosts.map((post) => (
-                  <BlogCard key={post.id} post={post} />
-                ))}
-              </div>
             </Reveal>
+            <Stagger className="grid-3">
+              {latestPosts.map((post) => (
+                <StaggerItem key={post.id}>
+                  <BlogCard post={post} />
+                </StaggerItem>
+              ))}
+            </Stagger>
           </div>
         </section>
       )}

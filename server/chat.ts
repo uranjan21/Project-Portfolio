@@ -41,7 +41,7 @@ function matchFaq(message: string): FaqEntry | undefined {
 }
 
 function buildContext(data: PortfolioData): string {
-  const { profile, audiences, services, pricing, testimonials, skills, experiences, projects, blogPosts, education, achievements, faqs } = data;
+  const { profile, audiences, services, pricing, testimonials, skills, experiences, projects, blogPosts, ventures, education, achievements, faqs } = data;
   return [
     `Name: ${profile.name}`,
     `Title: ${profile.title}`,
@@ -72,6 +72,9 @@ function buildContext(data: PortfolioData): string {
     '',
     'Blog posts:',
     ...blogPosts.map((b) => `- "${b.title}" (${b.date}): ${b.excerpt}`),
+    '',
+    'Beyond client work (ventures):',
+    ...ventures.map((v) => `- ${v.title} (${v.live ? 'live' : 'coming soon'}): ${v.tagline}. ${v.description}`),
     '',
     'Education:',
     ...education.map((e) => `- ${e.degree}, ${e.institution} (${e.period})${e.detail ? '. ' + e.detail : ''}`),

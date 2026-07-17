@@ -100,6 +100,21 @@ export interface BlogPost {
   coverUrl?: string;
 }
 
+/**
+ * A side of life beyond client work — content creation, founding startups,
+ * SaaS products. Shown as "Beyond the code" cards; coming-soon until live.
+ */
+export interface Venture {
+  id: string;
+  title: string;
+  emoji: string;
+  tagline: string;
+  description: string;
+  live: boolean;
+  /** Destination when live (channel, product site, …). */
+  url?: string;
+}
+
 export interface ContactMessage {
   id: string;
   name: string;
@@ -174,6 +189,7 @@ export interface PortfolioData {
   experiences: Experience[];
   projects: Project[];
   blogPosts: BlogPost[];
+  ventures: Venture[];
   education: Education[];
   achievements: Achievement[];
   faqs: FaqEntry[];
@@ -191,6 +207,7 @@ export const SECTION_KEYS: SectionKey[] = [
   'experiences',
   'projects',
   'blogPosts',
+  'ventures',
   'education',
   'achievements',
   'faqs',
