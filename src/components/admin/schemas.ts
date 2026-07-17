@@ -4,6 +4,7 @@ export type FieldType =
   | 'text'
   | 'textarea'
   | 'number' // rendered as input[type=number]
+  | 'boolean' // rendered as a Yes/No select
   | 'tags' // string[] edited as comma-separated text
   | 'lines' // string[] edited as one-entry-per-line textarea
   | 'pairs'; // {label,value}[] edited as "label | value" lines
@@ -48,6 +49,8 @@ export const SECTION_SCHEMAS: Record<SectionKey, SectionSchema> = {
       { key: 'bio', label: 'Bio', type: 'textarea' },
       { key: 'location', label: 'Location', type: 'text' },
       { key: 'email', label: 'Email', type: 'text' },
+      { key: 'phone', label: 'Phone', type: 'text', hint: 'Optional — shown on the contact page' },
+      { key: 'photoUrl', label: 'Portrait photo URL', type: 'text', hint: 'Optional — the hero shows your initials until this is set' },
       { key: 'links.github', label: 'GitHub URL', type: 'text' },
       { key: 'links.linkedin', label: 'LinkedIn URL', type: 'text' },
       { key: 'links.twitter', label: 'Twitter/X URL', type: 'text' },
@@ -83,6 +86,52 @@ export const SECTION_SCHEMAS: Record<SectionKey, SectionSchema> = {
       { key: 'quote', label: 'Quote', type: 'textarea', hint: 'Real quotes only — specific results beat generic praise' },
       { key: 'author', label: 'Author', type: 'text' },
       { key: 'role', label: 'Author role / company', type: 'text' },
+      { key: 'rating', label: 'Rating (1-5)', type: 'number' },
+    ],
+  },
+  services: {
+    kind: 'collection',
+    section: 'services',
+    title: 'Edit services',
+    idPrefix: 'svc',
+    labelKey: 'title',
+    fields: [
+      { key: 'title', label: 'Service title', type: 'text' },
+      { key: 'emoji', label: 'Icon emoji', type: 'text', hint: 'One emoji, e.g. 🖥️' },
+      { key: 'summary', label: 'Card summary', type: 'textarea', hint: 'One sentence shown on cards and in Google results' },
+      { key: 'description', label: 'Details page description', type: 'textarea', hint: 'Blank line = new paragraph' },
+      { key: 'deliverables', label: 'What the client gets', type: 'lines', hint: 'One deliverable per line' },
+      { key: 'tech', label: 'Tech', type: 'tags', hint: 'Comma-separated' },
+    ],
+  },
+  pricing: {
+    kind: 'collection',
+    section: 'pricing',
+    title: 'Edit pricing plans',
+    idPrefix: 'plan',
+    labelKey: 'name',
+    fields: [
+      { key: 'name', label: 'Plan name', type: 'text', hint: 'e.g. Hourly, Per project, Monthly retainer' },
+      { key: 'price', label: 'Price', type: 'text', hint: 'e.g. $60 or From $2,500' },
+      { key: 'unit', label: 'Unit', type: 'text', hint: 'e.g. / hour, / project, / month' },
+      { key: 'features', label: 'What’s included', type: 'lines', hint: 'One per line' },
+      { key: 'highlighted', label: 'Highlighted plan?', type: 'boolean', hint: 'The emphasised (amber) card — pick one' },
+    ],
+  },
+  blogPosts: {
+    kind: 'collection',
+    section: 'blogPosts',
+    title: 'Edit blog posts',
+    idPrefix: 'post',
+    labelKey: 'title',
+    fields: [
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'slug', label: 'URL slug', type: 'text', hint: 'Lowercase-with-dashes; the post lives at /blog/<slug>' },
+      { key: 'date', label: 'Date', type: 'text', hint: 'YYYY-MM-DD' },
+      { key: 'tags', label: 'Tags', type: 'tags', hint: 'Comma-separated' },
+      { key: 'excerpt', label: 'Excerpt', type: 'textarea', hint: 'Shown on cards and in Google results' },
+      { key: 'content', label: 'Content', type: 'textarea', hint: 'Blank line = paragraph, "## " = heading, "- " = bullet' },
+      { key: 'coverUrl', label: 'Cover image URL', type: 'text', hint: 'Optional' },
     ],
   },
   skills: {

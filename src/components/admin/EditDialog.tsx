@@ -33,6 +33,15 @@ function FieldInputs({
               value={values[field.key] ?? ''}
               onChange={(e) => onChange(field.key, e.target.value)}
             />
+          ) : field.type === 'boolean' ? (
+            <select
+              id={`field-${field.key}`}
+              value={values[field.key] ?? 'no'}
+              onChange={(e) => onChange(field.key, e.target.value)}
+            >
+              <option value="no">No</option>
+              <option value="yes">Yes</option>
+            </select>
           ) : (
             <input
               id={`field-${field.key}`}

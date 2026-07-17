@@ -1,11 +1,21 @@
 import type {
   AnswerQuestionRequest,
   ChatResponse,
+  ContactMessage,
   LoginResponse,
   PortfolioData,
   SectionKey,
   UnansweredQuestion,
 } from '../../shared/types';
+
+export interface ContactPayload {
+  name: string;
+  email: string;
+  phone?: string;
+  interest?: string;
+  budget?: string;
+  message: string;
+}
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -55,6 +65,22 @@ export const api = {
 
   dismissQuestion: (token: string, id: string) =>
     request<UnansweredQuestion>(`/api/admin/questions/${id}/dismiss`, {
+      method: 'POST',
+      headers: authHeaders(token),
+    }),
+
+  sendContact: (payload: ContactPayload) =>
+    request<{ ok: boolean }>('/api/contact', {
+      method: 'POST',
+      headers: jsonHeaders,
+      body: JSON.stringify(payload),
+    }),
+
+  getMessages: (token: string) =>
+    request<ContactMessage[]>('/api/admin/messages', { headers: authHeaders(token) }),
+
+  markMessageRead: (token: string, id: string) =>
+    request<ContactMessage>(`/api/admin/messages/${id}/read`, {
       method: 'POST',
       headers: authHeaders(token),
     }),

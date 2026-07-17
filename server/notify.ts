@@ -1,9 +1,10 @@
 import nodemailer from 'nodemailer';
 
-// Emails the owner when the chat assistant can't answer a visitor's question.
-// Silently no-ops unless SMTP is configured — the question is always stored in
-// the admin inbox regardless, so email is a convenience, not the record.
-export async function notifyOwner(question: string): Promise<void> {
+// Emails the owner about site events (unanswered chat questions, contact form
+// submissions). Silently no-ops unless SMTP is configured — everything is
+// always stored in the admin inboxes regardless, so email is a convenience,
+// not the record.
+export async function notifyOwner(subject: string, text: string): Promise<void> {
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, NOTIFY_EMAIL } = process.env;
   if (!SMTP_HOST || !NOTIFY_EMAIL) return;
 
@@ -17,8 +18,8 @@ export async function notifyOwner(question: string): Promise<void> {
     await transport.sendMail({
       from: SMTP_USER ?? NOTIFY_EMAIL,
       to: NOTIFY_EMAIL,
-      subject: 'Portfolio assistant: unanswered visitor question',
-      text: `A visitor asked a question the assistant could not answer:\n\n"${question}"\n\nAnswer it from the admin inbox on your portfolio to add it to the FAQ.`,
+      subject,
+      text,
     });
   } catch (err) {
     console.error('[notify] failed to send email:', err);

@@ -1,13 +1,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { PortfolioData, SectionKey, UnansweredQuestion } from '../shared/types';
+import type { ContactMessage, PortfolioData, SectionKey, UnansweredQuestion } from '../shared/types';
 import { SECTION_KEYS } from '../shared/types';
 import { seedData } from './seed';
 
 interface Database {
   portfolio: PortfolioData;
   questions: UnansweredQuestion[];
+  messages: ContactMessage[];
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -28,9 +29,10 @@ function load(): Database {
     // Nested profile fields added after the db file was first written.
     parsed.portfolio.profile.seo ??= structuredClone(seedData.profile.seo);
     parsed.questions ??= [];
+    parsed.messages ??= [];
     return parsed;
   }
-  return { portfolio: structuredClone(seedData), questions: [] };
+  return { portfolio: structuredClone(seedData), questions: [], messages: [] };
 }
 
 function persist(): void {
@@ -79,6 +81,31 @@ export function resolveQuestion(
   if (!entry) return undefined;
   entry.status = status;
   if (answer) entry.answer = answer;
+  persist();
+  return entry;
+}
+
+export function getMessages(): ContactMessage[] {
+  return db.messages;
+}
+
+export function addMessage(input: Omit<ContactMessage, 'id' | 'sentAt' | 'read'>): ContactMessage {
+  const entry: ContactMessage = {
+    ...input,
+    id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    sentAt: new Date().toISOString(),
+    read: false,
+  };
+  db.messages.unshift(entry);
+  if (db.messages.length > 500) db.messages.length = 500;
+  persist();
+  return entry;
+}
+
+export function markMessageRead(id: string): ContactMessage | undefined {
+  const entry = db.messages.find((m) => m.id === id);
+  if (!entry) return undefined;
+  entry.read = true;
   persist();
   return entry;
 }

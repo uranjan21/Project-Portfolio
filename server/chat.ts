@@ -41,7 +41,7 @@ function matchFaq(message: string): FaqEntry | undefined {
 }
 
 function buildContext(data: PortfolioData): string {
-  const { profile, audiences, testimonials, skills, experiences, projects, education, achievements, faqs } = data;
+  const { profile, audiences, services, pricing, testimonials, skills, experiences, projects, blogPosts, education, achievements, faqs } = data;
   return [
     `Name: ${profile.name}`,
     `Title: ${profile.title}`,
@@ -61,8 +61,17 @@ function buildContext(data: PortfolioData): string {
     'Experience:',
     ...experiences.map((e) => `- ${e.role} at ${e.company} (${e.period}, ${e.location}). ${e.highlights.join(' ')} Tech: ${e.tech.join(', ')}`),
     '',
+    'Services offered:',
+    ...services.map((s) => `- ${s.title}: ${s.summary} Deliverables: ${s.deliverables.join(', ')}.`),
+    ...(pricing.length > 0
+      ? ['', 'Pricing:', ...pricing.map((p) => `- ${p.name}: ${p.price} ${p.unit} (${p.features.join(', ')})`)]
+      : ['', 'Pricing: not published — invite the visitor to email for a quote.']),
+    '',
     'Projects:',
     ...projects.map((p) => `- ${p.title} [${p.tag}]: ${p.description} Tech: ${p.tech.join(', ')}`),
+    '',
+    'Blog posts:',
+    ...blogPosts.map((b) => `- "${b.title}" (${b.date}): ${b.excerpt}`),
     '',
     'Education:',
     ...education.map((e) => `- ${e.degree}, ${e.institution} (${e.period})${e.detail ? '. ' + e.detail : ''}`),
@@ -130,7 +139,10 @@ export async function answerQuestion(message: string): Promise<ChatResponse> {
 
   // 3. No answer available: store it for the owner and notify them.
   addQuestion(message);
-  void notifyOwner(message);
+  void notifyOwner(
+    'Portfolio assistant: unanswered visitor question',
+    `A visitor asked a question the assistant could not answer:\n\n"${message}"\n\nAnswer it from the admin inbox on your portfolio to add it to the FAQ.`,
+  );
   const name = getPortfolio().profile.name.split(' ')[0];
   return {
     reply:

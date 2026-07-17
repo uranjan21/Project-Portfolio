@@ -27,6 +27,9 @@ export interface Profile {
   bio: string;
   location: string;
   email: string;
+  phone?: string;
+  /** Optional portrait URL; the hero shows a monogram blob when unset. */
+  photoUrl?: string;
   links: SocialLinks;
   stats: Stat[];
   seo: SeoMeta;
@@ -54,6 +57,59 @@ export interface Testimonial {
   quote: string;
   author: string;
   role: string;
+  /** 1-5 stars; defaults to 5 in the UI when unset. */
+  rating?: number;
+}
+
+export interface Service {
+  id: string;
+  title: string;
+  /** Emoji shown in the service card icon circle. */
+  emoji: string;
+  /** One-liner for cards and meta descriptions. */
+  summary: string;
+  /** Long-form copy for the service details page; blank line = new paragraph. */
+  description: string;
+  deliverables: string[];
+  tech: string[];
+}
+
+export interface PricingPlan {
+  id: string;
+  name: string;
+  price: string;
+  /** e.g. "/ hour", "/ project", "/ month" */
+  unit: string;
+  features: string[];
+  highlighted: boolean;
+}
+
+export interface BlogPost {
+  id: string;
+  /** URL path segment: /blog/<slug> */
+  slug: string;
+  title: string;
+  excerpt: string;
+  /**
+   * Lightweight markup: blank line = paragraph break, lines starting with
+   * "## " = heading, lines starting with "- " = bullet list item.
+   */
+  content: string;
+  date: string; // ISO date
+  tags: string[];
+  coverUrl?: string;
+}
+
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  interest?: string;
+  budget?: string;
+  message: string;
+  sentAt: string; // ISO timestamp
+  read: boolean;
 }
 
 export interface Skill {
@@ -61,6 +117,8 @@ export interface Skill {
   name: string;
   category: string;
   level: number; // 0-100
+  /** Emoji shown in the tools grid tile. */
+  emoji?: string;
 }
 
 export interface Experience {
@@ -78,6 +136,8 @@ export interface Project {
   title: string;
   tag: string;
   description: string;
+  /** Long-form copy for the project details page; blank line = new paragraph. */
+  details?: string;
   tech: string[];
   liveUrl?: string;
   repoUrl?: string;
@@ -107,10 +167,13 @@ export interface FaqEntry {
 export interface PortfolioData {
   profile: Profile;
   audiences: AudiencePitch[];
+  services: Service[];
+  pricing: PricingPlan[];
   testimonials: Testimonial[];
   skills: Skill[];
   experiences: Experience[];
   projects: Project[];
+  blogPosts: BlogPost[];
   education: Education[];
   achievements: Achievement[];
   faqs: FaqEntry[];
@@ -121,10 +184,13 @@ export type SectionKey = keyof PortfolioData;
 export const SECTION_KEYS: SectionKey[] = [
   'profile',
   'audiences',
+  'services',
+  'pricing',
   'testimonials',
   'skills',
   'experiences',
   'projects',
+  'blogPosts',
   'education',
   'achievements',
   'faqs',

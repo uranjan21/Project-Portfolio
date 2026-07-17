@@ -84,7 +84,7 @@ export const seedData: PortfolioData = {
         'Built to last — clean, documented code your future team can take over without archaeology.',
       ],
       ctaLabel: 'Start a project →',
-      ctaHref: 'mailto:utsavranjan.sk@gmail.com?subject=Project%20inquiry',
+      ctaHref: '/contact',
     },
     {
       id: 'engineer',
@@ -104,15 +104,136 @@ export const seedData: PortfolioData = {
       ctaHref: 'https://github.com/uranjan21',
     },
   ],
+  services: [
+    {
+      id: 'svc-webapp',
+      title: 'Web Application Development',
+      emoji: '🖥️',
+      summary:
+        'Complete web applications with React and TypeScript — fast, responsive, and built to convert visitors into customers.',
+      description:
+        'A website that just exists is a cost; a web application that works for your business is an asset. I build ' +
+        'complete web products: marketing sites that rank, dashboards your team actually uses, and customer-facing ' +
+        'apps that feel instant.\n\nEvery build is typed end-to-end with TypeScript, responsive by default, and ' +
+        'measured against real performance budgets — because a beautiful app nobody waits for beats a beautiful app ' +
+        'nobody waits on.',
+      deliverables: [
+        'Responsive React + TypeScript frontend',
+        'Production deployment with CI',
+        'Performance and SEO baked in',
+        'Documentation and handover walkthrough',
+      ],
+      tech: ['React', 'TypeScript', 'Vite', 'Node.js'],
+    },
+    {
+      id: 'svc-backend',
+      title: 'Backend & API Development',
+      emoji: '⚙️',
+      summary:
+        'Reliable Node.js and Python backends — REST APIs, authentication, integrations and databases that scale with you.',
+      description:
+        'The backend is where products win or lose trust: it either stays up, stays fast and keeps data safe — or it ' +
+        "doesn't. I design and build APIs with Node.js and Python that do the boring things brilliantly: " +
+        'authentication, payments, third-party integrations, background jobs and clean data models.\n\nYou get an API ' +
+        'your frontend team enjoys consuming and your next engineer can extend without a guided tour.',
+      deliverables: [
+        'REST API with authentication and validation',
+        'Database schema design (SQL or NoSQL)',
+        'Third-party integrations (payments, email, …)',
+        'API documentation',
+      ],
+      tech: ['Node.js', 'Python', 'PostgreSQL', 'MongoDB'],
+    },
+    {
+      id: 'svc-ai',
+      title: 'AI Integrations & Tools',
+      emoji: '🤖',
+      summary:
+        'Practical AI features for your product — assistants, content pipelines and automations grounded in your own data.',
+      description:
+        'AI features fail when they are bolted on for the demo. I build AI that earns its place in your product: ' +
+        'assistants grounded in your real content, document and data pipelines, and automations that remove hours of ' +
+        'manual work per week.\n\nCost-aware prompt design, sensible fallbacks when the model is unsure, and ' +
+        'measurable outcomes — the assistant on this very site is a working example.',
+      deliverables: [
+        'LLM-powered features (OpenAI / Claude APIs)',
+        'Retrieval grounded in your own content',
+        'Cost-aware prompt pipelines with fallbacks',
+        'Usage monitoring and guardrails',
+      ],
+      tech: ['OpenAI API', 'Python', 'Node.js', 'FastAPI'],
+    },
+    {
+      id: 'svc-dashboards',
+      title: 'Dashboards & Data Visualisation',
+      emoji: '📊',
+      summary:
+        'Real-time dashboards that turn your data into decisions — interactive charts, filters and exportable reports.',
+      description:
+        'Data teams drown in ad-hoc requests because decision-makers cannot answer their own questions. I build ' +
+        'dashboards that fix that: real-time metrics, interactive charts, custom date ranges and exports — designed ' +
+        'around the decisions people actually make, not around the tables you happen to have.\n\nBuilt with ' +
+        'TypeScript and D3 or your charting stack of choice, on top of clean, fast queries.',
+      deliverables: [
+        'Interactive charts and filters',
+        'Real-time or scheduled data refresh',
+        'Exportable reports (CSV / PDF)',
+        'Role-based access when needed',
+      ],
+      tech: ['TypeScript', 'D3.js', 'PostgreSQL'],
+    },
+    {
+      id: 'svc-mvp',
+      title: 'MVP Development for Startups',
+      emoji: '🚀',
+      summary:
+        'From idea to launched product in weeks — one senior engineer covering design, build and deploy.',
+      description:
+        'Speed is a startup’s only unfair advantage, and committees are slow. I take founders from napkin sketch to ' +
+        'a launched, testable product: scoping what actually needs to exist for v1, building it end-to-end, and ' +
+        'shipping it on infrastructure that won’t fall over on launch day.\n\nWeekly demos keep you in control; ' +
+        'honest scoping keeps the budget predictable. When you raise or grow, the codebase is ready for the team ' +
+        'you hire next.',
+      deliverables: [
+        'Ruthless v1 scoping session',
+        'Full-stack build: frontend, backend, database',
+        'Production deployment and analytics',
+        'Weekly demos and a launch checklist',
+      ],
+      tech: ['React', 'TypeScript', 'Node.js', 'Python'],
+    },
+    {
+      id: 'svc-rescue',
+      title: 'Code Rescue & Modernisation',
+      emoji: '🛠️',
+      summary:
+        'Stalled project? Legacy codebase? I diagnose, stabilise and modernise so you can ship again.',
+      description:
+        'Some of my favourite work starts with “our last developer disappeared”. I take over stalled or legacy ' +
+        'codebases, map what exists, stabilise what is breaking, and modernise incrementally — no risky big-bang ' +
+        'rewrites, no hostage-taking.\n\nYou get an honest technical assessment first, then a prioritised plan: what ' +
+        'to fix now, what can wait, and what should never be touched again.',
+      deliverables: [
+        'Technical audit with prioritised findings',
+        'Critical fixes and stabilisation',
+        'Incremental modernisation plan',
+        'Tests and docs where they pay off most',
+      ],
+      tech: ['JavaScript', 'TypeScript', 'Python', 'SQL'],
+    },
+  ],
+  // Hidden until you publish real rates from admin mode — visitors should
+  // never see invented pricing.
+  pricing: [],
   // Hidden until real quotes are added from admin mode — never fabricate these.
   testimonials: [],
   skills: [
-    { id: 'sk-react', name: 'React', category: 'Frontend', level: 90 },
-    { id: 'sk-js', name: 'JavaScript / TypeScript', category: 'Frontend', level: 92 },
-    { id: 'sk-python', name: 'Python', category: 'Backend', level: 85 },
-    { id: 'sk-node', name: 'Node.js', category: 'Backend', level: 80 },
-    { id: 'sk-db', name: 'Databases (SQL / NoSQL)', category: 'Data', level: 78 },
-    { id: 'sk-cloud', name: 'Cloud / DevOps', category: 'Infrastructure', level: 72 },
+    { id: 'sk-react', name: 'React', category: 'Frontend', level: 90, emoji: '⚛️' },
+    { id: 'sk-js', name: 'JavaScript / TypeScript', category: 'Frontend', level: 92, emoji: '🟨' },
+    { id: 'sk-python', name: 'Python', category: 'Backend', level: 85, emoji: '🐍' },
+    { id: 'sk-node', name: 'Node.js', category: 'Backend', level: 80, emoji: '🟢' },
+    { id: 'sk-db', name: 'Databases (SQL / NoSQL)', category: 'Data', level: 78, emoji: '🗄️' },
+    { id: 'sk-cloud', name: 'Cloud / DevOps', category: 'Infrastructure', level: 72, emoji: '☁️' },
   ],
   experiences: [
     {
@@ -161,6 +282,38 @@ export const seedData: PortfolioData = {
       tech: ['TypeScript', 'D3.js', 'PostgreSQL'],
       liveUrl: '',
       repoUrl: '',
+    },
+  ],
+  blogPosts: [
+    {
+      id: 'post-1',
+      slug: 'idea-to-production',
+      title: 'How I take a product from idea to production',
+      excerpt:
+        'The exact process I use on every freelance build — from ruthless v1 scoping to the launch checklist — and why weekly demos are non-negotiable.',
+      content:
+        'Every stalled project I have ever rescued died the same death: it tried to be everything before it was ' +
+        'anything. So the first thing I do with a new product is not code — it is subtraction.\n\n' +
+        '## Step 1: Scope the smallest thing worth launching\n\n' +
+        'We list everything the product could do, then cut until removing one more thing would make it pointless. ' +
+        'That is v1. Everything else goes on a roadmap where it can no longer delay the launch.\n\n' +
+        '## Step 2: Build the walking skeleton\n\n' +
+        'Before any feature gets polish, I build the thinnest possible end-to-end slice: one screen, one API call, ' +
+        'one database table, deployed to production infrastructure from day one. Deployment problems found in week ' +
+        'one cost an afternoon; found in week eight, they cost the launch date.\n\n' +
+        '## Step 3: Demo every week, no exceptions\n\n' +
+        'Weekly demos are not a status ritual — they are how estimates stay honest. Working software cannot ' +
+        'exaggerate. If a week produced nothing demoable, we both learn that immediately, while it is still cheap ' +
+        'to fix.\n\n' +
+        '## Step 4: Launch with a checklist, not a prayer\n\n' +
+        '- Error tracking wired up and tested\n' +
+        '- Analytics answering the one question that matters: are people using it?\n' +
+        '- Backups verified by actually restoring one\n' +
+        '- A rollback path that takes minutes, not meetings\n\n' +
+        'None of this is glamorous. All of it is why the products I ship stay shipped. If you have an idea that ' +
+        'deserves this treatment, my inbox is open.',
+      date: '2026-07-01',
+      tags: ['Process', 'Freelancing', 'Shipping'],
     },
   ],
   education: [

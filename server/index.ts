@@ -7,7 +7,8 @@ import type { AnswerQuestionRequest, ChatRequest, LoginRequest, UpdateSectionReq
 import { SECTION_KEYS } from '../shared/types';
 import { issueToken, requireAdmin, verifyPassword } from './auth';
 import { answerQuestion } from './chat';
-import { addFaq, getPortfolio, getQuestions, resolveQuestion, updateSection } from './db';
+import { addFaq, addMessage, getMessages, getPortfolio, getQuestions, markMessageRead, resolveQuestion, updateSection } from './db';
+import { notifyOwner } from './notify';
 import { streamResumePdf } from './resume';
 import { renderRobotsTxt, renderSeoTags, renderSitemapXml } from './seo';
 
@@ -27,18 +28,25 @@ app.get('/api/resume.pdf', (_req, res) => {
   streamResumePdf(res);
 });
 
-// Naive per-IP throttle for the chat endpoint (protects the OpenAI budget).
-const chatHits = new Map<string, { count: number; windowStart: number }>();
-const CHAT_WINDOW_MS = 60_000;
-const CHAT_MAX_PER_WINDOW = 10;
+// Naive per-IP throttle (protects the OpenAI budget and the contact inbox).
+function makeThrottle(maxPerMinute: number) {
+  const hits = new Map<string, { count: number; windowStart: number }>();
+  return (ip: string): boolean => {
+    const now = Date.now();
+    const entry = hits.get(ip);
+    if (!entry || now - entry.windowStart > 60_000) {
+      hits.set(ip, { count: 1, windowStart: now });
+      return true;
+    }
+    return ++entry.count <= maxPerMinute;
+  };
+}
+
+const allowChat = makeThrottle(10);
+const allowContact = makeThrottle(3);
 
 app.post('/api/chat', async (req, res) => {
-  const ip = req.ip ?? 'unknown';
-  const now = Date.now();
-  const hits = chatHits.get(ip);
-  if (!hits || now - hits.windowStart > CHAT_WINDOW_MS) {
-    chatHits.set(ip, { count: 1, windowStart: now });
-  } else if (++hits.count > CHAT_MAX_PER_WINDOW) {
+  if (!allowChat(req.ip ?? 'unknown')) {
     res.status(429).json({ error: 'Too many messages — give it a minute.' });
     return;
   }
@@ -49,6 +57,37 @@ app.post('/api/chat', async (req, res) => {
     return;
   }
   res.json(await answerQuestion(message.trim()));
+});
+
+app.post('/api/contact', (req, res) => {
+  if (!allowContact(req.ip ?? 'unknown')) {
+    res.status(429).json({ error: 'Too many submissions — give it a minute.' });
+    return;
+  }
+
+  const { name, email, phone, interest, budget, message } = req.body as Record<string, unknown>;
+  const str = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+  const cleanName = str(name, 120);
+  const cleanEmail = str(email, 200);
+  const cleanMessage = str(message, 4000);
+  if (!cleanName || !cleanMessage || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+    res.status(400).json({ error: 'name, a valid email, and message are required' });
+    return;
+  }
+
+  const entry = addMessage({
+    name: cleanName,
+    email: cleanEmail,
+    phone: str(phone, 40) || undefined,
+    interest: str(interest, 120) || undefined,
+    budget: str(budget, 60) || undefined,
+    message: cleanMessage,
+  });
+  void notifyOwner(
+    `Portfolio contact: ${cleanName}`,
+    `New message from your portfolio contact form.\n\nFrom: ${cleanName} <${cleanEmail}>${entry.phone ? `\nPhone: ${entry.phone}` : ''}${entry.interest ? `\nInterested in: ${entry.interest}` : ''}${entry.budget ? `\nBudget: ${entry.budget}` : ''}\n\n${cleanMessage}`,
+  );
+  res.json({ ok: true });
 });
 
 // --- Admin API ---
@@ -105,6 +144,19 @@ app.post('/api/admin/questions/:id/dismiss', requireAdmin, (req, res) => {
   res.json(entry);
 });
 
+app.get('/api/admin/messages', requireAdmin, (_req, res) => {
+  res.json(getMessages());
+});
+
+app.post('/api/admin/messages/:id/read', requireAdmin, (req, res) => {
+  const entry = markMessageRead(req.params.id);
+  if (!entry) {
+    res.status(404).json({ error: 'Message not found' });
+    return;
+  }
+  res.json(entry);
+});
+
 // --- Static client + SEO (production build) ---
 
 // Prefer an explicit SITE_URL for canonical links; fall back to the request host.
@@ -117,7 +169,7 @@ app.get('/robots.txt', (req, res) => {
 });
 
 app.get('/sitemap.xml', (req, res) => {
-  res.type('application/xml').send(renderSitemapXml(siteUrl(req)));
+  res.type('application/xml').send(renderSitemapXml(getPortfolio(), siteUrl(req)));
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -126,9 +178,10 @@ if (process.env.NODE_ENV === 'production') {
   const SEO_BLOCK = /<!-- seo:start -->[\s\S]*?<!-- seo:end -->/;
 
   app.use(express.static(distDir, { index: false }));
-  // SPA fallback for any non-API route, with SEO tags rendered from live content.
+  // SPA fallback for any non-API route, with route-aware SEO tags rendered
+  // from live content.
   app.get('*', (req, res) => {
-    res.type('html').send(template.replace(SEO_BLOCK, renderSeoTags(getPortfolio(), siteUrl(req))));
+    res.type('html').send(template.replace(SEO_BLOCK, renderSeoTags(getPortfolio(), siteUrl(req), req.path)));
   });
 }
 

@@ -31,6 +31,8 @@ export function toInputString(item: AnyRecord, field: FieldSpec): string {
         : '';
     case 'number':
       return raw === undefined || raw === null ? '' : String(raw);
+    case 'boolean':
+      return raw ? 'yes' : 'no';
     default:
       return typeof raw === 'string' ? raw : '';
   }
@@ -62,6 +64,9 @@ export function applyInputString(item: AnyRecord, field: FieldSpec, input: strin
       setPath(item, field.key, Number.isFinite(n) ? Math.max(0, Math.min(100, n)) : 0);
       break;
     }
+    case 'boolean':
+      setPath(item, field.key, input === 'yes');
+      break;
     default:
       setPath(item, field.key, input.trim());
   }

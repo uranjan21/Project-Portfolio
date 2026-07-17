@@ -1,32 +1,33 @@
 # Utsav Ranjan — Portfolio
 
-A cinematic, HUD-styled portfolio: React 18 + TypeScript + Vite on the front, Express + TypeScript on the back.
+A marketing-first personal site for a software engineer & freelancer: React 18 + TypeScript + Vite + react-router on the front, Express + TypeScript on the back. Warm professional design — cream canvas, forest-green bands, amber accents.
 
-![stack](https://img.shields.io/badge/stack-React%20%2B%20TS%20%2B%20Express-38bdf8)
+## Pages
+
+Home · Services (+ per-service details) · About · Projects (+ per-project details) · Blog (+ articles) · Testimonials · Contact (with form) · FAQs · 404 · Coming Soon
 
 ## Features
 
-- **Audience-targeted content** — visitors pick who they are (hiring for a team /
-  need something built / fellow engineer) and the hero pitch, value propositions and
+- **Audience-targeted pitch** — visitors pick who they are (hiring for a team / need
+  something built / fellow engineer) and the hero headline, pitch, value props and
   primary CTA retarget instantly. Shareable deep links: `/?for=recruiter`,
-  `/?for=client`, `/?for=engineer`. All pitches editable from admin mode.
-- **SEO built for name searches** — the server injects meta tags, Open Graph/Twitter
-  cards and JSON-LD structured data (Person, WebSite, FAQPage) rendered from the live
-  content, plus `robots.txt` and `sitemap.xml`. The FAQ powers both the chat assistant
-  and Google FAQ rich results.
-
-- **Cinematic HUD interface** — canvas starfield with scroll + mouse parallax, boot
-  sequence, scanlines, glitch/typewriter text, corner-bracket cards with 3D tilt,
-  scroll-reveal sections, live status bar.
-- **Admin mode** — log in from the footer (`ADMIN ACCESS`, or `Ctrl/Cmd+Shift+A`) and
-  every section grows an **Edit** chip. Edits happen in dialogs and persist server-side,
-  instantly visible to all visitors.
-- **One-page resume** — visitors download a PDF generated live from the current
-  portfolio content (`/api/resume.pdf`).
-- **Chat assistant** — answers questions about me, as me. Pipeline: curated FAQ →
-  OpenAI (grounded strictly in portfolio content) → if it can't answer, the question is
-  stored in my admin inbox and I'm notified by email. Answering it (optionally adding it
-  to the FAQ) teaches the assistant for next time.
+  `/?for=client`, `/?for=engineer`.
+- **Admin mode everywhere** — log in from the footer (*Admin access*, or
+  `Ctrl/Cmd+Shift+A`) and every section grows an ✎ Edit chip. Content persists
+  server-side and is instantly live for all visitors: profile, services, pricing,
+  projects, blog posts, testimonials, skills, experience, education, FAQs.
+- **Two admin inboxes** — visitor questions the chat assistant couldn't answer
+  (answer once → optionally auto-added to FAQ) and contact-form messages, both with
+  unread badges and optional email notifications.
+- **Chat assistant** — answers as me, grounded in the site's own content: curated FAQ
+  first (free), then OpenAI (optional), then "I've forwarded this to Utsav".
+- **One-page PDF resume** — generated live from current content at `/api/resume.pdf`.
+- **SEO engineered per route** — the server injects route-aware titles, descriptions,
+  canonical URLs, Open Graph/Twitter cards and JSON-LD (Person + WebSite everywhere,
+  FAQPage on /faqs, BlogPosting on articles), plus a dynamic `sitemap.xml` that
+  includes every service, project and blog URL.
+- **Honest by default** — pricing and testimonials stay hidden from visitors until you
+  publish real plans and real quotes from admin mode.
 
 ## Quickstart
 
@@ -52,7 +53,7 @@ npm start                   # serves app + API on http://localhost:5177
 | `SESSION_SECRET` | recommended | Signs admin session tokens |
 | `OPENAI_API_KEY` | no | Enables free-form AI answers in the chat assistant |
 | `OPENAI_MODEL` | no | Defaults to `gpt-4o-mini` |
-| `NOTIFY_EMAIL` + `SMTP_*` | no | Email notifications for unanswered questions |
+| `NOTIFY_EMAIL` + `SMTP_*` | no | Email notifications for questions & contact messages |
 | `PORT` | no | API port, default `5177` |
 
 Content lives in `data/db.json` (created on first boot from `server/seed.ts`) — edit it
@@ -60,23 +61,26 @@ through the admin UI, not by hand. Deleting the file resets to seed content.
 
 ## Admin workflow
 
-1. Footer → **ADMIN ACCESS** → password.
-2. **Edit** chips appear on every section — profile, experience, projects, skills,
-   education, achievements, and the FAQ (footer → **EDIT FAQ**).
-3. **INBOX** (bottom-left bar) lists visitor questions the assistant couldn't answer.
-   Write the answer, tick *Add to FAQ*, save — done.
-4. Testimonials are hidden until you add real ones (Why Me section → *Add testimonials*).
+1. Footer → **Admin access** → password.
+2. ✎ Edit chips appear on every section of every page.
+3. The floating admin bar (bottom-left) has **Questions** (chat) and **Messages**
+   (contact form) inboxes with unread badges.
+4. Publish real **pricing plans** and **testimonials** when ready — those sections stay
+   hidden from visitors until they contain real content.
+5. Blog posts: title, slug, date, tags, excerpt, and content with light markup
+   (blank line = paragraph, `## ` heading, `- ` bullets).
 
 ## Ranking for your name on Google
 
-The site ships the on-page half: name in the title/H1/meta, Person + WebSite + FAQPage
-structured data, canonical URL, sitemap, robots, fast static assets. The off-page half
-is yours:
+The site ships the on-page half: your name in every title, per-route metadata,
+Person/WebSite/FAQPage/BlogPosting structured data, canonical URLs, a dynamic sitemap
+and indexable content pages. The off-page half is yours:
 
 1. Deploy on a domain containing your name (e.g. `utsavranjan.dev`) and set `SITE_URL`.
-2. Verify the site in [Google Search Console](https://search.google.com/search-console)
-   and submit `sitemap.xml`.
-3. Link the site from every profile Google already trusts — GitHub, LinkedIn, X,
-   dev.to, Stack Overflow — and put those URLs in the profile's social links so they
-   appear in `sameAs` structured data (Google uses this to connect your identities).
-4. Keep content fresh: real experience bullets, real projects, real testimonials.
+2. Verify in [Google Search Console](https://search.google.com/search-console) and
+   submit `sitemap.xml`.
+3. Link the site from profiles Google already trusts — GitHub, LinkedIn, X,
+   Stack Overflow — and add those URLs to your profile links so they appear in
+   `sameAs` structured data.
+4. Publish articles occasionally — each blog post is a new indexable page that can
+   rank for its own queries and strengthens the whole domain.

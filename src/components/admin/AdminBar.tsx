@@ -1,23 +1,28 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api/client';
 import { usePortfolio } from '../../context/PortfolioContext';
+import { MessagesInbox } from './MessagesInbox';
 import { QuestionsInbox } from './QuestionsInbox';
 
-/** Floating bar shown while in admin mode: inbox with badge + logout. */
+/** Floating bar shown while in admin mode: inboxes with badges + logout. */
 export function AdminBar() {
   const { token, logout } = usePortfolio();
-  const [openCount, setOpenCount] = useState(0);
-  const [inboxOpen, setInboxOpen] = useState(false);
+  const [openQuestions, setOpenQuestions] = useState(0);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+  const [panel, setPanel] = useState<'questions' | 'messages' | null>(null);
 
   useEffect(() => {
     if (!token) return;
     let cancelled = false;
     const poll = async () => {
       try {
-        const questions = await api.getQuestions(token);
-        if (!cancelled) setOpenCount(questions.filter((q) => q.status === 'open').length);
+        const [questions, messages] = await Promise.all([api.getQuestions(token), api.getMessages(token)]);
+        if (!cancelled) {
+          setOpenQuestions(questions.filter((q) => q.status === 'open').length);
+          setUnreadMessages(messages.filter((m) => !m.read).length);
+        }
       } catch {
-        // token expired or network hiccup — badge just goes stale
+        // token expired or network hiccup — badges just go stale
       }
     };
     void poll();
@@ -26,18 +31,22 @@ export function AdminBar() {
       cancelled = true;
       clearInterval(interval);
     };
-  }, [token, inboxOpen]);
+  }, [token, panel]);
 
   return (
     <>
       <div className="admin-bar">
-        <span className="who">◈ ADMIN MODE</span>
-        <button onClick={() => setInboxOpen(true)}>
-          INBOX{openCount > 0 && <span className="badge">{openCount}</span>}
+        <span>◆ ADMIN</span>
+        <button onClick={() => setPanel('questions')}>
+          Questions{openQuestions > 0 && <span className="badge">{openQuestions}</span>}
         </button>
-        <button onClick={logout}>LOGOUT</button>
+        <button onClick={() => setPanel('messages')}>
+          Messages{unreadMessages > 0 && <span className="badge">{unreadMessages}</span>}
+        </button>
+        <button onClick={logout}>Logout</button>
       </div>
-      {inboxOpen && <QuestionsInbox onClose={() => setInboxOpen(false)} />}
+      {panel === 'questions' && <QuestionsInbox onClose={() => setPanel(null)} />}
+      {panel === 'messages' && <MessagesInbox onClose={() => setPanel(null)} />}
     </>
   );
 }
