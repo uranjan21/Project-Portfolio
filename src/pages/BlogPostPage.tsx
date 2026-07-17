@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { BlogCard, formatDate, readingTime } from '../components/cards/BlogCard';
 import { CtaBand } from '../components/sections/CtaBand';
+import { PageHero } from '../components/ui/PageHero';
 import { RichText } from '../components/ui/RichText';
 import { useAdminUI } from '../context/AdminUIContext';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -24,24 +25,18 @@ export function BlogPostPage() {
 
   return (
     <>
-      <div className="container page-hero">
-        <span className="breadcrumb">
-          <Link to="/blog">Blog</Link> / {post.title}
-        </span>
-        <h1>{post.title}</h1>
-        <p className="sub" style={{ fontWeight: 600 }}>
-          {formatDate(post.date)} · {readingTime(post.content)} · by {data.profile.name}
-        </p>
-        <div className="tag-chips" style={{ marginTop: '0.8rem' }}>
+      <PageHero
+        title={post.title}
+        crumbs={[{ label: 'Blog', to: '/blog' }, { label: post.title }]}
+        sub={`${formatDate(post.date)} · ${readingTime(post.content)} · by ${data.profile.name}`}
+        onEdit={editFor('blogPosts')}
+      />
+      <div className="container" style={{ textAlign: 'center' }}>
+        <div className="tag-chips" style={{ justifyContent: 'center' }}>
           {post.tags.map((t) => (
             <span key={t}>{t}</span>
           ))}
         </div>
-        {editFor('blogPosts') && (
-          <button className="edit-chip" onClick={editFor('blogPosts')} style={{ marginTop: '1rem' }}>
-            ✎ Edit posts
-          </button>
-        )}
       </div>
       <section className="section" style={{ paddingTop: '2.4rem' }}>
         <div className="container">

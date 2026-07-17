@@ -1,6 +1,7 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { ProjectCard } from '../components/cards/ProjectCard';
 import { CtaBand } from '../components/sections/CtaBand';
+import { PageHero } from '../components/ui/PageHero';
 import { Pill } from '../components/ui/Pill';
 import { RichText } from '../components/ui/RichText';
 import { useAdminUI } from '../context/AdminUIContext';
@@ -21,18 +22,12 @@ export function ProjectDetailsPage() {
 
   return (
     <>
-      <div className="container page-hero">
-        <span className="breadcrumb">
-          <Link to="/projects">Projects</Link> / {project.title}
-        </span>
-        <h1>{project.title}</h1>
-        <p className="sub">{project.description}</p>
-        {editFor('projects') && (
-          <button className="edit-chip" onClick={editFor('projects')} style={{ marginTop: '1rem' }}>
-            ✎ Edit projects
-          </button>
-        )}
-      </div>
+      <PageHero
+        title={project.title}
+        crumbs={[{ label: 'Projects', to: '/projects' }, { label: project.title }]}
+        sub={project.description}
+        onEdit={editFor('projects')}
+      />
       <section className="section" style={{ paddingTop: '2.4rem' }}>
         <div className="container detail-layout">
           <div className="prose">
