@@ -2,6 +2,19 @@
 
 Marketing-first portfolio site for Utsav Ranjan, in a warm professional theme (cream / forest-green / amber). Single npm package: React 18 + TypeScript client (Vite, react-router) and an Express + TypeScript API server.
 
+## Branching Strategy
+
+| Branch | Purpose |
+|---|---|
+| `main` | Production-ready code. Only merged into via PRs from `dev` or hotfix branches. |
+| `dev` | Integration branch. All feature work merges here first; QA happens here. |
+| `feature/<short-name>` | New features (`feature/chat-widget`, `feature/dark-mode`). Branch off `dev`. |
+| `fix/<short-name>` | Bug fixes (`fix/nav-overlap`, `fix/seo-inject`). Branch off `dev`. |
+| `hotfix/<short-name>` | Urgent production patches. Branch off `main`; merge back into both `main` and `dev`. |
+| `release/<version>` | Release prep (`release/1.1.0`). Branch off `dev`; merge into `main` and tag. |
+
+**Workflow:** `feature/*` → PR → `dev` → PR → `main`. Never push directly to `main`.
+
 ## Commands
 
 | Command | What it does |
@@ -16,6 +29,9 @@ There is no test suite yet. Verify changes with `npm run build` plus manual/curl
 ## Architecture
 
 ```
+public/              Static files served as-is by Vite dev and copied into dist/ on build.
+  favicon.svg        Brand favicon (green square, amber "U") — SVG for all modern browsers.
+  og-image.png       (add when ready) OpenGraph share image; referenced in server/seo.ts.
 shared/types.ts      All domain + API types. Client and server both import from here —
                      change data shapes HERE first.
 server/
@@ -35,6 +51,7 @@ server/
   notify.ts          notifyOwner(subject, text) — SMTP email, no-op unless configured
   resume.ts          One-page PDF (pdfkit) rendered from live db data
 src/
+  assets/            Static images/fonts imported by components (Vite resolves + hashes them).
   App.tsx            Router: / /services(/:id) /about /projects(/:id) /blog(/:slug)
                      /testimonials /contact /faqs /coming-soon + 404
   components/layout/ Layout (shell + admin dialog layer + scroll restore), Nav, Footer
