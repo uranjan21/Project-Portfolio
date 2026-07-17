@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { BlogCard, formatDate } from '../components/cards/BlogCard';
+import { BlogCard, formatDate, readingTime } from '../components/cards/BlogCard';
 import { CtaBand } from '../components/sections/CtaBand';
 import { RichText } from '../components/ui/RichText';
 import { useAdminUI } from '../context/AdminUIContext';
@@ -16,7 +16,11 @@ export function BlogPostPage() {
   if (!data) return null;
   if (!post) return <NotFoundPage />;
 
-  const more = data.blogPosts.filter((p) => p.id !== post.id).slice(0, 3);
+  const sorted = [...data.blogPosts].sort((a, b) => b.date.localeCompare(a.date));
+  const index = sorted.findIndex((p) => p.id === post.id);
+  const newer = index > 0 ? sorted[index - 1] : undefined;
+  const older = index < sorted.length - 1 ? sorted[index + 1] : undefined;
+  const more = sorted.filter((p) => p.id !== post.id).slice(0, 3);
 
   return (
     <>
@@ -26,8 +30,13 @@ export function BlogPostPage() {
         </span>
         <h1>{post.title}</h1>
         <p className="sub" style={{ fontWeight: 600 }}>
-          {formatDate(post.date)} · {post.tags.join(' · ')} · by {data.profile.name}
+          {formatDate(post.date)} · {readingTime(post.content)} · by {data.profile.name}
         </p>
+        <div className="tag-chips" style={{ marginTop: '0.8rem' }}>
+          {post.tags.map((t) => (
+            <span key={t}>{t}</span>
+          ))}
+        </div>
         {editFor('blogPosts') && (
           <button className="edit-chip" onClick={editFor('blogPosts')} style={{ marginTop: '1rem' }}>
             ✎ Edit posts
@@ -39,6 +48,24 @@ export function BlogPostPage() {
           <div className="prose">
             <RichText text={post.content} />
           </div>
+          {(newer || older) && (
+            <nav className="post-nav" aria-label="More articles">
+              {older ? (
+                <Link to={`/blog/${older.slug}`}>
+                  <div className="nav-label">← Older</div>
+                  <div className="nav-title">{older.title}</div>
+                </Link>
+              ) : (
+                <span />
+              )}
+              {newer && (
+                <Link to={`/blog/${newer.slug}`} className="next">
+                  <div className="nav-label">Newer →</div>
+                  <div className="nav-title">{newer.title}</div>
+                </Link>
+              )}
+            </nav>
+          )}
         </div>
       </section>
       {more.length > 0 && (

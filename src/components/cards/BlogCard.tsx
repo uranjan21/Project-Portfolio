@@ -5,6 +5,11 @@ export function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+export function readingTime(content: string): string {
+  const words = content.split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.round(words / 200))} min read`;
+}
+
 export function BlogCard({ post }: { post: BlogPost }) {
   return (
     <div className="card blog-card">
@@ -13,7 +18,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
       </Link>
       <div className="blog-body">
         <span className="blog-date">
-          {formatDate(post.date)} · {post.tags.join(' · ')}
+          {formatDate(post.date)} · {readingTime(post.content)}
         </span>
         <h3>{post.title}</h3>
         <p>{post.excerpt}</p>

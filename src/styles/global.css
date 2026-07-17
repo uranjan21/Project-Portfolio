@@ -1144,6 +1144,129 @@ img {
   font-weight: 800;
 }
 
+/* ---------- Filters ---------- */
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.8rem;
+}
+
+.filter-chip {
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  border-radius: 999px;
+  padding: 0.42rem 1.05rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+
+.filter-chip:hover {
+  border-color: var(--amber);
+  color: var(--ink);
+}
+
+.filter-chip.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--on-dark);
+}
+
+/* ---------- Detail pages ---------- */
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(240px, 0.9fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.facts-card {
+  position: sticky;
+  top: 86px;
+}
+
+.facts-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.9rem;
+}
+
+.facts-card .fact {
+  padding: 0.65rem 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.88rem;
+}
+
+.facts-card .fact .fact-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.facts-card .cta-row {
+  margin-top: 1.2rem;
+}
+
+/* Prev/next article navigation */
+.post-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-width: 720px;
+  margin-top: 2.5rem;
+}
+
+.post-nav a {
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1.1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.post-nav a:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+
+.post-nav a.next {
+  text-align: right;
+}
+
+.post-nav .nav-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--amber-deep);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.post-nav .nav-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 640px) {
+  .post-nav {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- FAQ accordion ---------- */
 
 .faq-list {

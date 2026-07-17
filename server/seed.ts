@@ -257,6 +257,20 @@ export const seedData: PortfolioData = {
       description:
         'Full-stack commerce engine with real-time inventory, integrated payments and an admin dashboard ' +
         'that lets non-technical staff run the store — no developer on call required.',
+      details:
+        '## The challenge\n\n' +
+        'An online store is really three products in a trench coat: the storefront customers see, the ' +
+        'inventory and order machinery behind it, and the admin tools the team lives in every day. Most ' +
+        'builds nail the first and neglect the other two — which is how you end up overselling stock and ' +
+        'needing a developer to change a product description.\n\n' +
+        '## The approach\n\n' +
+        '- React storefront designed around the buying journey: fast search, honest stock states, frictionless checkout\n' +
+        '- Node.js order pipeline with real-time inventory, so two buyers can’t purchase the last unit twice\n' +
+        '- Integrated payments with webhook-driven order states — paid, packed, shipped, refunded\n' +
+        '- An admin dashboard non-technical staff actually use: products, pricing, stock and orders without touching code\n\n' +
+        '## The outcome\n\n' +
+        'The store runs day-to-day without engineering involvement: stock reconciliation stopped being a ' +
+        'daily chore, and content changes ship in minutes instead of tickets.',
       tech: ['React', 'Node.js', 'MongoDB'],
       liveUrl: '',
       repoUrl: '',
@@ -268,6 +282,19 @@ export const seedData: PortfolioData = {
       description:
         'AI writing assistant that turns a product brief into blog posts, social copy and product ' +
         'descriptions in seconds — FastAPI + OpenAI with cost-aware prompt pipelines.',
+      details:
+        '## The challenge\n\n' +
+        'Marketing teams don’t lack ideas — they lack hours. The brief was to turn a product description ' +
+        'into publish-ready content in every format the team needed, without the output reading like a ' +
+        'robot wrote it and without the API bill reading like a phone number.\n\n' +
+        '## The approach\n\n' +
+        '- FastAPI backend orchestrating prompt pipelines per content type: blog post, social thread, product copy\n' +
+        '- Brand-voice grounding: every generation is conditioned on the team’s tone guide and past approved copy\n' +
+        '- Cost-aware design — cheap models for drafts and expansions, premium models only for final passes\n' +
+        '- Human-in-the-loop editing flow, because AI should draft and people should decide\n\n' +
+        '## The outcome\n\n' +
+        'First drafts that used to take an afternoon now take a coffee break, and the editing flow keeps ' +
+        'quality in human hands.',
       tech: ['Python', 'FastAPI', 'OpenAI'],
       liveUrl: '',
       repoUrl: '',
@@ -279,6 +306,19 @@ export const seedData: PortfolioData = {
       description:
         'Real-time analytics with interactive D3 charts, custom date ranges and exportable reports — built ' +
         'so decision-makers answer their own questions instead of filing data requests.',
+      details:
+        '## The challenge\n\n' +
+        'Every data request was a ticket, every ticket was a day, and by the time the answer arrived the ' +
+        'question had changed. The goal: let decision-makers answer their own questions safely, in real ' +
+        'time, without SQL.\n\n' +
+        '## The approach\n\n' +
+        '- Interactive D3 visualisations designed around the decisions people make, not the tables that happen to exist\n' +
+        '- Custom date ranges, comparisons and drill-downs with URL-shareable state\n' +
+        '- Fast PostgreSQL queries behind a caching layer, so “real-time” stays real under load\n' +
+        '- One-click CSV / PDF exports for the meeting deck\n\n' +
+        '## The outcome\n\n' +
+        'Ad-hoc data requests to the engineering team dropped to a trickle — the dashboard became the ' +
+        'first place people look instead of the last resort.',
       tech: ['TypeScript', 'D3.js', 'PostgreSQL'],
       liveUrl: '',
       repoUrl: '',
@@ -314,6 +354,62 @@ export const seedData: PortfolioData = {
         'deserves this treatment, my inbox is open.',
       date: '2026-07-01',
       tags: ['Process', 'Freelancing', 'Shipping'],
+    },
+    {
+      id: 'post-2',
+      slug: 'typescript-end-to-end',
+      title: 'Why I type everything end-to-end',
+      excerpt:
+        'One shared set of TypeScript types between client and server turns a whole class of production bugs into red squiggles — here’s the setup I use on every project.',
+      content:
+        'The most expensive bugs I get called in to fix are rarely clever. They are a field renamed on the ' +
+        'backend that the frontend still expects, a number that became a string somewhere over the wire, an ' +
+        'optional value nobody remembered could be missing. Not one of them deserves to reach production, ' +
+        'because all of them are knowable at compile time.\n\n' +
+        '## One set of types, two sides of the wire\n\n' +
+        'On every project I keep a single shared module of domain types — the shape of a project, an order, ' +
+        'a message — that both the client and the server import. Neither side is allowed its own private ' +
+        'copy. When the shape changes, the compiler walks me to every place that has to care, on both ' +
+        'sides, before anything ships.\n\n' +
+        '## The API contract is a type, not a wiki page\n\n' +
+        'Request and response payloads get typed interfaces next to the domain types. The typed fetch ' +
+        'wrapper on the client and the route handler on the server both compile against them. ' +
+        'Documentation can drift; the compiler doesn’t.\n\n' +
+        '## Where the discipline pays for itself\n\n' +
+        '- Refactors stop being scary — rename the field and follow the red squiggles to done\n' +
+        '- New engineers ramp faster, because the types are a map of the system\n' +
+        '- Code review gets sharper: the diff shows exactly which contracts a change touches\n\n' +
+        'This site is built exactly this way — one shared types module, a typed API client, typed route ' +
+        'handlers. The pattern costs minutes on day one and pays rent every week after.',
+      date: '2026-06-12',
+      tags: ['TypeScript', 'Architecture', 'Engineering'],
+    },
+    {
+      id: 'post-3',
+      slug: 'ai-features-that-earn-their-place',
+      title: 'AI features that earn their place',
+      excerpt:
+        'Most AI features are demos wearing a product costume. Three rules keep the ones I build useful after the novelty wears off: ground it, cap it, and give it a fallback.',
+      content:
+        'Adding AI to a product is easy. Adding AI that anyone still uses in month three is a design ' +
+        'problem, not a model problem. The AI features I build follow three rules.\n\n' +
+        '## Rule 1: Ground it in your data\n\n' +
+        'A model answering from its own imagination is a liability with a chat window. Every assistant I ' +
+        'ship answers only from content the owner controls — the product docs, the portfolio, the ' +
+        'knowledge base — and is instructed to say “I don’t know” rather than improvise. Confidently wrong ' +
+        'is the most expensive failure mode in AI.\n\n' +
+        '## Rule 2: Cap what it can cost you\n\n' +
+        'Token bills grow quietly. Cheap paths first: cached answers, keyword matching against a curated ' +
+        'FAQ, smaller models for routine work. The expensive model is a last resort, rate-limited per ' +
+        'user, with a budget alarm. If the feature only works economically at demo traffic, it doesn’t work.\n\n' +
+        '## Rule 3: Design the fallback before the feature\n\n' +
+        'What happens when the model is down, slow, or unsure? The answer can’t be a spinner. The ' +
+        'assistant on this site falls back gracefully: FAQ first, model second, and when neither can ' +
+        'answer, the question is stored and forwarded to me — the visitor still gets an honest reply and I ' +
+        'get a to-do instead of a lost lead.\n\n' +
+        'AI that follows these rules stops being a party trick and starts being infrastructure.',
+      date: '2026-05-20',
+      tags: ['AI', 'Product', 'Engineering'],
     },
   ],
   education: [

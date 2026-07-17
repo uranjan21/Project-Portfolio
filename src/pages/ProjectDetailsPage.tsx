@@ -26,14 +26,7 @@ export function ProjectDetailsPage() {
           <Link to="/projects">Projects</Link> / {project.title}
         </span>
         <h1>{project.title}</h1>
-        <div className="tag-chips" style={{ marginTop: '1rem' }}>
-          <span>{project.tag}</span>
-          {project.tech.map((t) => (
-            <span className="green" key={t}>
-              {t}
-            </span>
-          ))}
-        </div>
+        <p className="sub">{project.description}</p>
         {editFor('projects') && (
           <button className="edit-chip" onClick={editFor('projects')} style={{ marginTop: '1rem' }}>
             ✎ Edit projects
@@ -41,26 +34,53 @@ export function ProjectDetailsPage() {
         )}
       </div>
       <section className="section" style={{ paddingTop: '2.4rem' }}>
-        <div className="container">
+        <div className="container detail-layout">
           <div className="prose">
-            <p>{project.description}</p>
-            {project.details && <RichText text={project.details} />}
+            {project.details ? (
+              <RichText text={project.details} />
+            ) : (
+              <p>{project.description}</p>
+            )}
+          </div>
+          <aside className="card facts-card">
+            <h3>At a glance</h3>
+            <div className="fact">
+              <div className="fact-label">Type</div>
+              {project.tag}
+            </div>
+            <div className="fact">
+              <div className="fact-label">Built with</div>
+              <div className="tag-chips" style={{ marginTop: '0.35rem' }}>
+                {project.tech.map((t) => (
+                  <span className="green" key={t}>
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+            {(project.liveUrl || project.repoUrl) && (
+              <div className="fact">
+                <div className="fact-label">Links</div>
+                <div className="tag-chips" style={{ marginTop: '0.35rem' }}>
+                  {project.liveUrl && (
+                    <a href={project.liveUrl} target="_blank" rel="noreferrer">
+                      <span>Live demo ↗</span>
+                    </a>
+                  )}
+                  {project.repoUrl && (
+                    <a href={project.repoUrl} target="_blank" rel="noreferrer">
+                      <span>Source ↗</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
             <div className="cta-row">
-              {project.liveUrl && (
-                <Pill href={project.liveUrl} variant="amber" newTab>
-                  View live
-                </Pill>
-              )}
-              {project.repoUrl && (
-                <Pill href={project.repoUrl} variant="outline" newTab>
-                  Source code ↗
-                </Pill>
-              )}
-              <Pill to="/contact" variant={project.liveUrl ? 'outline' : 'amber'}>
+              <Pill to="/contact" variant="amber" small>
                 Build something like this
               </Pill>
             </div>
-          </div>
+          </aside>
         </div>
       </section>
       {others.length > 0 && (
