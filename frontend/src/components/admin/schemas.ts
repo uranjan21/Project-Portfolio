@@ -1,4 +1,4 @@
-import type { SectionKey } from '../../../shared/types';
+import type { SectionKey } from '../../types/portfolio';
 
 export type FieldType =
   | 'text'

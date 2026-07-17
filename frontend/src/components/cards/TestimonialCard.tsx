@@ -1,4 +1,4 @@
-import type { Testimonial } from '../../../shared/types';
+import type { Testimonial } from '../../types/portfolio';
 
 export function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   const rating = Math.min(5, Math.max(1, testimonial.rating ?? 5));

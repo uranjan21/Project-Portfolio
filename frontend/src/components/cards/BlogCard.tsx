@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { BlogPost } from '../../../shared/types';
+import type { BlogPost } from '../../types/portfolio';
 
 export function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });

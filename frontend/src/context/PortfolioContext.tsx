@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { PortfolioData, SectionKey } from '../../shared/types';
+import type { PortfolioData, SectionKey } from '../types/portfolio';
 import { api } from '../api/client';
 
 const TOKEN_KEY = 'portfolio-admin-token';

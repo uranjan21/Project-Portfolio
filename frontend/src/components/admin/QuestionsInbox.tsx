@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { UnansweredQuestion } from '../../../shared/types';
+import type { UnansweredQuestion } from '../../types/portfolio';
 import { api } from '../../api/client';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Dialog } from './Dialog';

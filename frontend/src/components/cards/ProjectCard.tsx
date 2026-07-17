@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { Project } from '../../../shared/types';
+import type { Project } from '../../types/portfolio';
 
 export function ProjectCard({ project }: { project: Project }) {
   return (

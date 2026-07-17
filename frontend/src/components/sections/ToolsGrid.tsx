@@ -1,4 +1,4 @@
-import type { Skill } from '../../../shared/types';
+import type { Skill } from '../../types/portfolio';
 import { Stagger, StaggerItem } from '../ui/Reveal';
 
 const CATEGORY_EMOJI: Record<string, string> = {

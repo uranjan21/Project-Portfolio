@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { SectionKey } from '../../shared/types';
+import type { SectionKey } from '../types/portfolio';
 
 export interface AdminUIValue {
   /** Returns an edit handler for the section when admin, undefined otherwise. */

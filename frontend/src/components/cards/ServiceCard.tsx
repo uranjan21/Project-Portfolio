@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { Service } from '../../../shared/types';
+import type { Service } from '../../types/portfolio';
 
 export function ServiceCard({ service }: { service: Service }) {
   return (

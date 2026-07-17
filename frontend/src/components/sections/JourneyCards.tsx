@@ -1,4 +1,4 @@
-import type { Education, Experience } from '../../../shared/types';
+import type { Education, Experience } from '../../types/portfolio';
 import { useAdminUI } from '../../context/AdminUIContext';
 
 interface JourneyCardsProps {

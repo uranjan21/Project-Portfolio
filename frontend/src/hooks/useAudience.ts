@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import type { AudiencePitch } from '../../shared/types';
+import type { AudiencePitch } from '../types/portfolio';
 
 const STORAGE_KEY = 'portfolio-audience';
 

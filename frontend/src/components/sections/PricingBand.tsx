@@ -1,4 +1,4 @@
-import type { PricingPlan } from '../../../shared/types';
+import type { PricingPlan } from '../../types/portfolio';
 import { useAdminUI } from '../../context/AdminUIContext';
 import { Pill } from '../ui/Pill';
 

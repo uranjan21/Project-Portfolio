@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { PortfolioData, SectionKey } from '../../../shared/types';
+import type { PortfolioData, SectionKey } from '../../types/portfolio';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Dialog } from './Dialog';
 import { applyInputString, toInputString } from './fieldValues';

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Outlet, useLocation } from 'react-router-dom';
-import type { SectionKey } from '../../../shared/types';
+import type { SectionKey } from '../../types/portfolio';
 import { AdminBar } from '../admin/AdminBar';
 import { EditDialog } from '../admin/EditDialog';
 import { LoginDialog } from '../admin/LoginDialog';

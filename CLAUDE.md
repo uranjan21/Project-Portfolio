@@ -1,6 +1,6 @@
-# Project-Portfolio
+# utsavranjan.info
 
-Marketing-first portfolio site for Utsav Ranjan, in a warm professional theme (cream / forest-green / amber). Single npm package: React 18 + TypeScript client (Vite, react-router) and an Express + TypeScript API server.
+Personal portfolio and professional presence for Utsav Ranjan. Warm professional theme (cream / forest-green / amber). Two-package monorepo: React 18 + TypeScript frontend (Vite) and Python FastAPI backend, with Supabase (hosted PostgreSQL) as the database.
 
 ## Branching Strategy
 
@@ -8,111 +8,95 @@ Marketing-first portfolio site for Utsav Ranjan, in a warm professional theme (c
 |---|---|
 | `main` | Production-ready code. Only merged into via PRs from `dev` or hotfix branches. |
 | `dev` | Integration branch. All feature work merges here first; QA happens here. |
-| `feature/<short-name>` | New features (`feature/chat-widget`, `feature/dark-mode`). Branch off `dev`. |
-| `fix/<short-name>` | Bug fixes (`fix/nav-overlap`, `fix/seo-inject`). Branch off `dev`. |
+| `feature/<short-name>` | New features. Branch off `dev`. |
+| `fix/<short-name>` | Bug fixes. Branch off `dev`. |
 | `hotfix/<short-name>` | Urgent production patches. Branch off `main`; merge back into both `main` and `dev`. |
-| `release/<version>` | Release prep (`release/1.1.0`). Branch off `dev`; merge into `main` and tag. |
 
 **Workflow:** `feature/*` → PR → `dev` → PR → `main`. Never push directly to `main`.
 
 ## Commands
 
+### Frontend (`cd frontend`)
+
 | Command | What it does |
 |---|---|
-| `npm run dev` | Client (Vite, :5173) + server (tsx watch, :5177) together; Vite proxies `/api` |
-| `npm run build` | Typechecks both tsconfigs, then builds client to `dist/` |
-| `npm start` | Production: server serves API + built `dist/` on :5177 |
-| `npm run typecheck` | `tsc --noEmit` for client (`tsconfig.json`) and server (`tsconfig.server.json`) |
+| `npm run dev` | Vite dev server on :5173; proxies `/api` to FastAPI on :8000 |
+| `npm run build` | Typechecks then builds to `dist/` |
+| `npm run typecheck` | `tsc --noEmit` |
 
-There is no test suite yet. Verify changes with `npm run build` plus manual/curl checks against the API.
+### Backend (`cd backend`)
+
+| Command | What it does |
+|---|---|
+| `source venv/bin/activate` | Activate Python virtualenv |
+| `uvicorn app.main:app --reload` | FastAPI dev server on :8000 |
+| `pip install -r requirements.txt` | Install Python dependencies |
+
+There is no test suite yet. Verify changes with frontend `npm run build` + manual/curl checks against the API.
 
 ## Architecture
 
 ```
-public/              Static files served as-is by Vite dev and copied into dist/ on build.
-  favicon.svg        Brand favicon (green square, amber "U") — SVG for all modern browsers.
-  og-image.png       (add when ready) OpenGraph share image; referenced in server/seo.ts.
-shared/types.ts      All domain + API types. Client and server both import from here —
-                     change data shapes HERE first.
-server/
-  index.ts           Express app, routes, rate limits, robots.txt + sitemap.xml,
-                     static serving with per-route SEO injection (prod only)
-  seo.ts             Per-route <head> block (title/meta/OG/Twitter + JSON-LD Person/
-                     WebSite everywhere, FAQPage on /faqs, BlogPosting on /blog/:slug)
-                     rendered from live db data into index.html's
-                     `<!-- seo:start -->…<!-- seo:end -->` markers; dynamic sitemap
-  db.ts              JSON-file datastore (data/db.json, gitignored). Sections auto-
-                     backfill from seed.ts when new ones are added.
-  seed.ts            Initial content, written as marketing copy. Pricing and
-                     testimonials seed EMPTY on purpose — never invent those.
-  auth.ts            ADMIN_PASSWORD check (timing-safe) → 12h JWT; requireAdmin
-  chat.ts            Answer pipeline: FAQ token-match → OpenAI (grounded, "UNKNOWN"
-                     sentinel) → store in inbox + notify owner
-  notify.ts          notifyOwner(subject, text) — SMTP email, no-op unless configured
-  resume.ts          One-page PDF (pdfkit) rendered from live db data
-src/
-  assets/            Static images/fonts imported by components (Vite resolves + hashes them).
-  App.tsx            Router: / /services(/:id) /about /projects(/:id) /blog(/:slug)
-                     /testimonials /contact /faqs /coming-soon + 404
-  components/layout/ Layout (shell + admin dialog layer + scroll restore), Nav, Footer
-  context/PortfolioContext.tsx  Data fetch + admin token (sessionStorage) + saveSection
-  context/AdminUIContext.tsx    editFor(section) → edit handler when admin; openLogin
-  pages/             One file per route; pages compose cards + sections
-  components/ui/     Pill (signature CTA), SectionHead, RichText (blank line =
-                     paragraph, "## " heading, "- " bullets), and the motion kit:
-                     Reveal/Stagger/StaggerItem (scroll reveals), CountUp (stats),
-                     ScrollProgress (top bar). App is wrapped in MotionConfig
-                     reducedMotion="user" — all animation respects OS settings.
-  components/cards/  ServiceCard, ProjectCard, BlogCard, TestimonialCard
-  components/sections/  Shared page sections: JourneyCards, ToolsGrid, PricingBand,
-                     Marquee (amber ticker), CtaBand (scatter-confetti CTA), FaqBand
-                     (dark home accordion), ContactForm + ContactBand (dark form
-                     section embedded at page bottoms)
-  components/ui/PageHero.tsx  Centered inner-page hero: title + Home/… breadcrumb +
-                     optional marquee. List pages use it; detail pages (project/blog)
-                     keep the left-aligned .page-hero style.
-  components/admin/  schemas.ts (field specs per section) → EditDialog (generic
-                     object/collection editor), LoginDialog, AdminBar,
-                     QuestionsInbox (chat), MessagesInbox (contact form)
-  components/chat/   ChatWidget (floating assistant)
-  hooks/             useReveal, useAudience, usePageMeta (client-side title sync)
-  styles/global.css  The entire design system — tokens at :root, class-based
+frontend/                  React 18 + Vite + TypeScript client
+  public/favicon.svg       Brand favicon
+  src/
+    api/client.ts          API client — VITE_API_BASE_URL prefix, all endpoints
+    types/portfolio.ts     All domain + API types (mirrors backend Pydantic schemas)
+    context/               PortfolioContext (data fetch + admin token), AdminUIContext
+    pages/                 One file per route: Home, Services, About, Projects, Blog, etc.
+    components/            admin/, cards/, sections/, ui/, chat/, layout/
+    hooks/                 usePageMeta, useAudience
+    styles/global.css      Design system — CSS variables on :root, class-based
+  index.html               SPA entry point
+  vite.config.ts           Proxy /api → localhost:8000
+
+backend/                   Python FastAPI + Supabase
+  app/
+    main.py                FastAPI app, CORS, rate limiting, mount routers
+    config.py              pydantic-settings env vars
+    database.py            Supabase client singleton
+    dependencies.py        get_current_admin (JWT auth)
+    routers/
+      public.py            GET /api/portfolio, POST /api/chat, POST /api/contact
+      auth.py              POST /api/admin/login
+      admin.py             PUT /api/admin/portfolio (generic section update)
+      questions.py         Admin questions CRUD
+      messages.py          Admin messages + follow-ups + convert-to-client
+      resume.py            GET /api/resume.pdf (generated PDF)
+      clients.py           Admin clients CRUD
+      projects.py          Admin projects CRUD (with status/client)
+      blogs.py             Admin blogs CRUD (with draft/publish)
+    schemas/               Pydantic models matching frontend TypeScript types
+    services/
+      portfolio.py         Assembles PortfolioData from Supabase tables
+      chat.py              FAQ match → OpenAI → unanswered pipeline
+      auth.py              Password verify, JWT issue/decode
+      notify.py            SMTP email notifications
+      resume.py            PDF generation (reportlab)
+    migrations/            SQL migration files
+  requirements.txt
+  .env.example
 ```
+
+## Database
+
+Supabase project: `utsavranjan-info` (ap-south-1)
+Project ID: `djqlpkmvugxkdhfxwviv`
+
+16 PostgreSQL tables: profile, stats, audiences, services, pricing_plans, skills, experiences, education, achievements, ventures, faqs, blog_posts, clients, projects, testimonials, contact_messages, contact_follow_ups, unanswered_questions.
 
 ## Key flows
 
-- **Audience targeting**: `data.audiences` drives the hero switcher, headline/pitch/CTA
-  and the Why Me cards on Home. Persists in localStorage; shareable via `/?for=<id>`
-  (seed ids: recruiter, client, engineer).
-- **SEO**: the server replaces the `seo:start/seo:end` block in `dist/index.html` per
-  request, route-aware (`server/seo.ts`). Sitemap includes dynamic service/project/blog
-  URLs. `SITE_URL` env sets canonical origin; falls back to request host. Do not remove
-  the marker comments from index.html; verify they survive `vite build`.
-- **Content editing**: every `PortfolioData` section edits through the same schema-driven
-  `EditDialog`. To add a field: extend `shared/types.ts`, add a `FieldSpec` in
-  `schemas.ts`, render it, and add to `server/resume.ts` if it belongs on the resume.
-- **Empty-until-real sections**: pricing and testimonials render nothing to visitors
-  while empty (admins see an edit prompt). Keep it that way — no fabricated rates or
-  quotes.
-- **Ventures ("Beyond the Code")**: `data.ventures` seeds the owner's upcoming
-  journeys (creator / founder / SaaS) as coming-soon cards on Home. Flipping `live`
-  + adding a `url` in admin turns a card into an outbound link — this is the
-  extension point for future life chapters.
-- **Chat**: `POST /api/chat` — FAQ match → OpenAI (only if `OPENAI_API_KEY`) →
-  unanswered questions stored + emailed; answering from the admin inbox can promote to
-  FAQ. FAQ also feeds Google rich results on /faqs.
-- **Contact**: `POST /api/contact` (rate-limited) → `db.messages` + email notify →
-  MessagesInbox in the admin bar. The footer newsletter signup reuses this endpoint
-  (interest: "Newsletter"), so subscribers land in the same inbox.
-- **Auth**: single admin password (env `ADMIN_PASSWORD`) → JWT in `sessionStorage`.
-  All mutating routes go through `requireAdmin`.
+- **Audience targeting**: `audiences` table drives the hero switcher, headline/pitch/CTA and the Why Me cards on Home. Persists in localStorage; shareable via `/?for=<id>`.
+- **Content editing**: every `PortfolioData` section edits through the schema-driven `EditDialog`. The `PUT /api/admin/portfolio` endpoint with `{section, value}` body handles all generic updates.
+- **Contact pipeline**: POST /api/contact → contact_messages table → admin messages inbox → mark read/replied → add follow-ups → convert to client.
+- **Projects CRM**: projects linked to clients via client_id. Status: received → in_progress → completed → cancelled.
+- **Chat**: POST /api/chat — FAQ token-match → OpenAI (if key set) → unanswered storage + email notify.
+- **Auth**: single admin password (env `ADMIN_PASSWORD`) → JWT in `sessionStorage`. All admin routes require Bearer token.
 
 ## Conventions
 
-- Types live in `shared/types.ts`; never duplicate them per side.
-- No CSS-in-JS / modules — one design system in `styles/global.css`, class-based;
-  design tokens are CSS variables on `:root`.
-- Server responses are JSON `{ error: string }` on failure; client `api/client.ts`
-  throws `Error(error)`.
-- Keep the resume to one A4 page — `resume.ts` truncates rather than overflowing.
-- Env vars documented in `.env.example`; never commit `.env` or `data/`.
+- Types live in `frontend/src/types/portfolio.ts` (TypeScript) and `backend/app/schemas/portfolio.py` (Pydantic). Keep them in sync.
+- No CSS-in-JS — one design system in `styles/global.css`, class-based; design tokens are CSS variables on `:root`.
+- Server responses are JSON `{"error": "..."}` on failure.
+- Env vars documented in `backend/.env.example`; never commit `.env`.

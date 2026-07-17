@@ -6,7 +6,7 @@ import type {
   PortfolioData,
   SectionKey,
   UnansweredQuestion,
-} from '../../shared/types';
+} from '../types/portfolio';
 
 export interface ContactPayload {
   name: string;
@@ -17,8 +17,10 @@ export interface ContactPayload {
   message: string;
 }
 
+const BASE = import.meta.env.VITE_API_BASE_URL ?? '';
+
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init);
+  const res = await fetch(`${BASE}${url}`, init);
   if (!res.ok) {
     const body = (await res.json().catch(() => ({}))) as { error?: string };
     throw new Error(body.error ?? `Request failed (${res.status})`);
