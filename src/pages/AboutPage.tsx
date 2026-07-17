@@ -1,4 +1,4 @@
-import { RESUME_URL } from '../api/client';
+import { RESUME_URL } from '../lib/api';
 import { CtaBand } from '../components/sections/CtaBand';
 import { JourneyCards } from '../components/sections/JourneyCards';
 import { ToolsGrid } from '../components/sections/ToolsGrid';

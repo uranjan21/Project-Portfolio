@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { api } from '../../api/client';
+import { api } from '../../lib/api';
 import { usePortfolio } from '../../context/PortfolioContext';
 
 interface Message {

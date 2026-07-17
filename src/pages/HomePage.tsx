@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { RESUME_URL } from '../api/client';
+import { RESUME_URL } from '../lib/api';
 import { BlogCard } from '../components/cards/BlogCard';
 import { ProjectCard } from '../components/cards/ProjectCard';
 import { ServiceCard } from '../components/cards/ServiceCard';

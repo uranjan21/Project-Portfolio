@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { ContactMessage } from '../../../shared/types';
-import { api } from '../../api/client';
+import { api } from '../../lib/api';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Dialog } from './Dialog';
 

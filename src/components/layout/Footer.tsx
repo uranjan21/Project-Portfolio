@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { api, RESUME_URL } from '../../api/client';
+import { api, RESUME_URL } from '../../lib/api';
 import { useAdminUI } from '../../context/AdminUIContext';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Pill } from '../ui/Pill';

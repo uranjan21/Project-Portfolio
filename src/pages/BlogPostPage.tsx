@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
-import { BlogCard, formatDate, readingTime } from '../components/cards/BlogCard';
+import { BlogCard } from '../components/cards/BlogCard';
+import { formatDate, readingTime } from '../utils/blog';
 import { CtaBand } from '../components/sections/CtaBand';
 import { PageHero } from '../components/ui/PageHero';
 import { RichText } from '../components/ui/RichText';

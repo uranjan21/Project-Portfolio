@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { api } from '../../api/client';
+import { api } from '../../lib/api';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Pill } from '../ui/Pill';
 
