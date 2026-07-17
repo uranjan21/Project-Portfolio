@@ -3,6 +3,7 @@ import { CtaBand } from '../components/sections/CtaBand';
 import { JourneyCards } from '../components/sections/JourneyCards';
 import { ToolsGrid } from '../components/sections/ToolsGrid';
 import { CountUp } from '../components/ui/CountUp';
+import { PageHero } from '../components/ui/PageHero';
 import { Pill } from '../components/ui/Pill';
 import { Reveal, Stagger, StaggerItem } from '../components/ui/Reveal';
 import { SectionHead } from '../components/ui/SectionHead';
@@ -19,18 +20,16 @@ export function AboutPage() {
 
   return (
     <>
-      <div className="container page-hero">
-        <span className="eyebrow">About Me</span>
-        <h1>
-          Who is <span className="accent">{profile.name}?</span>
-        </h1>
-        <p className="sub">{profile.tagline}</p>
-        {editFor('profile') && (
-          <button className="edit-chip" onClick={editFor('profile')} style={{ marginTop: '1rem' }}>
-            ✎ Edit profile
-          </button>
-        )}
-      </div>
+      <PageHero
+        title={
+          <>
+            Who is <span className="accent">{profile.name}?</span>
+          </>
+        }
+        crumbs={[{ label: 'About' }]}
+        sub={profile.tagline}
+        onEdit={editFor('profile')}
+      />
 
       <section className="section" style={{ paddingTop: '2.4rem' }}>
         <div className="container">

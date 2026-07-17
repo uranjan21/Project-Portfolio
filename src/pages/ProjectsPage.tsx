@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ProjectCard } from '../components/cards/ProjectCard';
 import { CtaBand } from '../components/sections/CtaBand';
+import { PageHero } from '../components/ui/PageHero';
 import { Reveal } from '../components/ui/Reveal';
 import { useAdminUI } from '../context/AdminUIContext';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -18,21 +19,13 @@ export function ProjectsPage() {
 
   return (
     <>
-      <div className="container page-hero">
-        <span className="eyebrow">My Portfolio</span>
-        <h1>
-          Projects <span className="accent">that shipped</span>
-        </h1>
-        <p className="sub">
-          A selection of things I’ve designed, built and launched — web apps, AI tools and
-          dashboards.
-        </p>
-        {editFor('projects') && (
-          <button className="edit-chip" onClick={editFor('projects')} style={{ marginTop: '1rem' }}>
-            ✎ Edit projects
-          </button>
-        )}
-      </div>
+      <PageHero
+        title="Projects"
+        crumbs={[{ label: 'Projects' }]}
+        sub="A selection of things I’ve designed, built and launched — web apps, AI tools and dashboards."
+        onEdit={editFor('projects')}
+        marquee
+      />
       <section className="section">
         <div className="container">
           {allTags.length > 1 && (

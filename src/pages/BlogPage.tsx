@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BlogCard } from '../components/cards/BlogCard';
 import { CtaBand } from '../components/sections/CtaBand';
+import { PageHero } from '../components/ui/PageHero';
 import { Reveal } from '../components/ui/Reveal';
 import { useAdminUI } from '../context/AdminUIContext';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -20,18 +21,12 @@ export function BlogPage() {
 
   return (
     <>
-      <div className="container page-hero">
-        <span className="eyebrow">News & Blogs</span>
-        <h1>
-          Notes on <span className="accent">building software</span>
-        </h1>
-        <p className="sub">Process, freelancing and shipping — written from real projects.</p>
-        {editFor('blogPosts') && (
-          <button className="edit-chip" onClick={editFor('blogPosts')} style={{ marginTop: '1rem' }}>
-            ✎ Edit posts
-          </button>
-        )}
-      </div>
+      <PageHero
+        title="Blog"
+        crumbs={[{ label: 'Blog' }]}
+        sub="Notes on building software — process, freelancing and shipping, written from real projects."
+        onEdit={editFor('blogPosts')}
+      />
       <section className="section">
         <div className="container">
           {allTags.length > 1 && (

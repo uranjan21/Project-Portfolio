@@ -1,12 +1,23 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { ServiceCard } from '../components/cards/ServiceCard';
-import { CtaBand } from '../components/sections/CtaBand';
+import { ContactBand } from '../components/sections/ContactBand';
+import { PageHero } from '../components/ui/PageHero';
 import { Pill } from '../components/ui/Pill';
+import { Reveal, Stagger, StaggerItem } from '../components/ui/Reveal';
 import { RichText } from '../components/ui/RichText';
 import { useAdminUI } from '../context/AdminUIContext';
 import { usePortfolio } from '../context/PortfolioContext';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { NotFoundPage } from './NotFoundPage';
+
+// The delivery process is the same regardless of service — shown as the
+// numbered cards from the reference layout.
+const PROCESS_STEPS = [
+  { title: 'Scope', text: 'We define the smallest version worth shipping — and cut everything that can wait.' },
+  { title: 'Build', text: 'Typed end-to-end, deployed to real infrastructure from week one.' },
+  { title: 'Demo', text: 'Working software every week — estimates stay honest because you see progress.' },
+  { title: 'Launch', text: 'Monitoring, analytics and a rollback path — then we ship, and it stays shipped.' },
+];
 
 export function ServiceDetailsPage() {
   const { id } = useParams();
@@ -21,54 +32,96 @@ export function ServiceDetailsPage() {
 
   return (
     <>
-      <div className="container page-hero">
-        <span className="breadcrumb">
-          <Link to="/services">Services</Link> / {service.title}
-        </span>
-        <h1>
-          {service.emoji} {service.title}
-        </h1>
-        <p className="sub">{service.summary}</p>
-        {editFor('services') && (
-          <button className="edit-chip" onClick={editFor('services')} style={{ marginTop: '1rem' }}>
-            ✎ Edit services
-          </button>
-        )}
-      </div>
-      <section className="section" style={{ paddingTop: '2.4rem' }}>
+      <PageHero
+        title="Services"
+        crumbs={[{ label: 'Services', to: '/services' }, { label: service.title }]}
+        onEdit={editFor('services')}
+        marquee
+      />
+
+      <section className="section" style={{ paddingBottom: '2rem' }}>
         <div className="container">
-          <div className="prose">
-            <RichText text={service.description} />
-            <h2>What you get</h2>
-            <ul className="check-list">
+          <Reveal>
+            <div className="service-media">
+              <span className="service-media-emoji">{service.emoji}</span>
+              <h1>{service.title}</h1>
+              <p>{service.summary}</p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <Reveal>
+            <h2 className="detail-h">
+              About <span className="accent">{service.title}</span>
+            </h2>
+            <div className="prose" style={{ maxWidth: 780 }}>
+              <RichText text={service.description} />
+            </div>
+          </Reveal>
+
+          <Reveal>
+            <h2 className="detail-h" style={{ marginTop: '2.4rem' }}>
+              What’s <span className="accent">included</span>
+            </h2>
+            <div className="check-chips">
               {service.deliverables.map((d, i) => (
-                <li key={i}>{d}</li>
+                <span className="check-chip" key={i}>
+                  <span className="check-dot">✓</span> {d}
+                </span>
               ))}
-            </ul>
-            <div className="tag-chips" style={{ margin: '1.2rem 0 1.8rem' }}>
               {service.tech.map((t) => (
-                <span key={t}>{t}</span>
+                <span className="check-chip soft" key={t}>
+                  <span className="check-dot">✓</span> {t}
+                </span>
               ))}
             </div>
+          </Reveal>
+
+          <Reveal>
+            <h2 className="detail-h" style={{ marginTop: '2.4rem' }}>
+              How it <span className="accent">works</span>
+            </h2>
+          </Reveal>
+          <Stagger className="grid-2 process-grid">
+            {PROCESS_STEPS.map((step, i) => (
+              <StaggerItem key={step.title}>
+                <div className="card process-card">
+                  <span className="process-num">{String(i + 1).padStart(2, '0')}</span>
+                  <div>
+                    <h4>{step.title}</h4>
+                    <p>{step.text}</p>
+                  </div>
+                </div>
+              </StaggerItem>
+            ))}
+          </Stagger>
+
+          <div className="cta-row" style={{ marginTop: '2.2rem' }}>
             <Pill to="/contact" variant="amber">
               Discuss this service
             </Pill>
           </div>
         </div>
       </section>
+
       {others.length > 0 && (
         <section className="section" style={{ paddingTop: 0 }}>
           <div className="container">
             <span className="eyebrow">More Services</span>
-            <div className="grid-3" style={{ marginTop: '1.2rem' }}>
+            <Stagger className="grid-3" >
               {others.map((s) => (
-                <ServiceCard key={s.id} service={s} />
+                <StaggerItem key={s.id}>
+                  <ServiceCard service={s} />
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
           </div>
         </section>
       )}
-      <CtaBand />
+      <ContactBand />
     </>
   );
 }

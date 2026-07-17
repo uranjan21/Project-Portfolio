@@ -6,7 +6,9 @@ import { ProjectCard } from '../components/cards/ProjectCard';
 import { ServiceCard } from '../components/cards/ServiceCard';
 import { TestimonialCard } from '../components/cards/TestimonialCard';
 import { CtaBand } from '../components/sections/CtaBand';
+import { FaqBand } from '../components/sections/FaqBand';
 import { JourneyCards } from '../components/sections/JourneyCards';
+import { Marquee } from '../components/sections/Marquee';
 import { PricingBand } from '../components/sections/PricingBand';
 import { ToolsGrid } from '../components/sections/ToolsGrid';
 import { CountUp } from '../components/ui/CountUp';
@@ -180,17 +182,7 @@ export function HomePage() {
       </section>
 
       {/* ---------- Marquee ---------- */}
-      <div className="marquee" aria-hidden="true">
-        <div className="marquee-track">
-          {[0, 1].map((copy) => (
-            <span key={copy}>
-              {data.services.map((s) => (
-                <span key={s.id}>{s.title}</span>
-              ))}
-            </span>
-          ))}
-        </div>
-      </div>
+      <Marquee />
 
       {/* ---------- Services ---------- */}
       <section className="section">
@@ -487,6 +479,9 @@ export function HomePage() {
           </div>
         </section>
       )}
+
+      {/* ---------- FAQ band ---------- */}
+      <FaqBand />
 
       <CtaBand />
     </>

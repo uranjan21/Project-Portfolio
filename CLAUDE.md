@@ -47,7 +47,13 @@ src/
                      ScrollProgress (top bar). App is wrapped in MotionConfig
                      reducedMotion="user" — all animation respects OS settings.
   components/cards/  ServiceCard, ProjectCard, BlogCard, TestimonialCard
-  components/sections/  JourneyCards, ToolsGrid, PricingBand, CtaBand (shared by pages)
+  components/sections/  Shared page sections: JourneyCards, ToolsGrid, PricingBand,
+                     Marquee (amber ticker), CtaBand (scatter-confetti CTA), FaqBand
+                     (dark home accordion), ContactForm + ContactBand (dark form
+                     section embedded at page bottoms)
+  components/ui/PageHero.tsx  Centered inner-page hero: title + Home/… breadcrumb +
+                     optional marquee. List pages use it; detail pages (project/blog)
+                     keep the left-aligned .page-hero style.
   components/admin/  schemas.ts (field specs per section) → EditDialog (generic
                      object/collection editor), LoginDialog, AdminBar,
                      QuestionsInbox (chat), MessagesInbox (contact form)
@@ -79,7 +85,8 @@ src/
   unanswered questions stored + emailed; answering from the admin inbox can promote to
   FAQ. FAQ also feeds Google rich results on /faqs.
 - **Contact**: `POST /api/contact` (rate-limited) → `db.messages` + email notify →
-  MessagesInbox in the admin bar.
+  MessagesInbox in the admin bar. The footer newsletter signup reuses this endpoint
+  (interest: "Newsletter"), so subscribers land in the same inbox.
 - **Auth**: single admin password (env `ADMIN_PASSWORD`) → JWT in `sessionStorage`.
   All mutating routes go through `requireAdmin`.
 

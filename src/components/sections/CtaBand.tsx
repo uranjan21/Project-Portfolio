@@ -1,34 +1,49 @@
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Pill } from '../ui/Pill';
+import { Reveal } from '../ui/Reveal';
 
-/** Closing call-to-action band used across pages. */
+// Deterministic pseudo-random scatter per index (rotation, drift delay).
+const ROTATIONS = [-8, 5, -4, 9, -11, 3, 7, -6, 10, -3, 6, -9];
+
+/** Centered CTA with scattered tag "confetti", per the reference design. */
 export function CtaBand() {
   const { data } = usePortfolio();
   if (!data) return null;
 
+  const tags = [
+    ...data.services.map((s) => s.title),
+    ...data.skills.slice(0, 6).map((s) => s.name.split(' /')[0]),
+  ].slice(0, 12);
+
   return (
     <section className="section">
       <div className="container">
-        <div className="band center" style={{ textAlign: 'center' }}>
-          <span className="eyebrow" style={{ justifyContent: 'center' }}>
-            Contact
-          </span>
-          <h2 style={{ margin: '0.6rem auto 1rem', maxWidth: 560 }}>
-            Let’s Talk for <span className="accent">Your Next Project</span>
-          </h2>
-          <p style={{ maxWidth: 520, margin: '0 auto 1.6rem' }}>
-            Tell me what you’re building — you’ll get an honest reply, usually within a day. Or ask
-            the assistant in the corner anything about me first.
-          </p>
-          <div className="cta-row" style={{ justifyContent: 'center', marginTop: 0 }}>
-            <Pill to="/contact" variant="amber">
-              Start the conversation
-            </Pill>
-            <Pill href={`mailto:${data.profile.email}`} variant="outline">
-              {data.profile.email}
-            </Pill>
+        <Reveal>
+          <div className="cta-scatter">
+            <h2>
+              Let’s Create an <span className="accent">Amazing Project</span> Together!
+            </h2>
+            <div className="cta-row" style={{ justifyContent: 'center', marginTop: '1.6rem' }}>
+              <Pill to="/contact" variant="amber">
+                Contact Us Now
+              </Pill>
+            </div>
+            <div className="tag-confetti" aria-hidden="true">
+              {tags.map((tag, i) => (
+                <span
+                  key={tag}
+                  className={i % 2 ? 'confetti amber' : 'confetti'}
+                  style={{
+                    transform: `rotate(${ROTATIONS[i % ROTATIONS.length]}deg)`,
+                    animationDelay: `${(i % 6) * 0.5}s`,
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

@@ -1,7 +1,9 @@
 import { ServiceCard } from '../components/cards/ServiceCard';
+import { ContactBand } from '../components/sections/ContactBand';
 import { CtaBand } from '../components/sections/CtaBand';
 import { PricingBand } from '../components/sections/PricingBand';
-import { Reveal } from '../components/ui/Reveal';
+import { PageHero } from '../components/ui/PageHero';
+import { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useAdminUI } from '../context/AdminUIContext';
 import { usePortfolio } from '../context/PortfolioContext';
 import { usePageMeta } from '../hooks/usePageMeta';
@@ -14,34 +16,29 @@ export function ServicesPage() {
 
   return (
     <>
-      <div className="container page-hero">
-        <span className="eyebrow">Services</span>
-        <h1>
-          What I can <span className="accent">do for you</span>
-        </h1>
-        <p className="sub">
-          Every engagement starts from your goal, not my toolbox — these are the shapes it usually
-          takes. Not sure which fits? Just describe the problem on the contact page.
-        </p>
-        {editFor('services') && (
-          <button className="edit-chip" onClick={editFor('services')} style={{ marginTop: '1rem' }}>
-            ✎ Edit services
-          </button>
-        )}
-      </div>
+      <PageHero title="Services" crumbs={[{ label: 'Services' }]} onEdit={editFor('services')} marquee />
       <section className="section">
         <div className="container">
-          <Reveal>
-            <div className="grid-3">
-              {data.services.map((service) => (
-                <ServiceCard key={service.id} service={service} />
-              ))}
-            </div>
-          </Reveal>
+          <div className="center" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            <span className="eyebrow" style={{ justifyContent: 'center' }}>
+              Services
+            </span>
+            <h2 style={{ marginTop: '0.5rem' }}>
+              Services <span className="accent">I Provide</span>
+            </h2>
+          </div>
+          <Stagger className="grid-3">
+            {data.services.map((service) => (
+              <StaggerItem key={service.id}>
+                <ServiceCard service={service} />
+              </StaggerItem>
+            ))}
+          </Stagger>
         </div>
       </section>
       <PricingBand pricing={data.pricing} />
       <CtaBand />
+      <ContactBand />
     </>
   );
 }

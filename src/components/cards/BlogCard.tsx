@@ -15,6 +15,10 @@ export function BlogCard({ post }: { post: BlogPost }) {
     <div className="card blog-card">
       <Link to={`/blog/${post.slug}`} className="blog-cover">
         {post.coverUrl ? <img src={post.coverUrl} alt="" /> : <span>{post.title}</span>}
+        <span className="cover-chips">
+          {post.tags[0] && <span className="cover-chip">{post.tags[0]}</span>}
+          <span className="cover-chip date">{formatDate(post.date)}</span>
+        </span>
       </Link>
       <div className="blog-body">
         <span className="blog-date">

@@ -1,5 +1,6 @@
 import { TestimonialCard } from '../components/cards/TestimonialCard';
 import { CtaBand } from '../components/sections/CtaBand';
+import { PageHero } from '../components/ui/PageHero';
 import { Reveal } from '../components/ui/Reveal';
 import { useAdminUI } from '../context/AdminUIContext';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -13,17 +14,12 @@ export function TestimonialsPage() {
 
   return (
     <>
-      <div className="container page-hero">
-        <span className="eyebrow">Clients Testimonials</span>
-        <h1>
-          The impact of my work, <span className="accent">in their words</span>
-        </h1>
-        {editFor('testimonials') && (
-          <button className="edit-chip" onClick={editFor('testimonials')} style={{ marginTop: '1rem' }}>
-            ✎ Edit testimonials
-          </button>
-        )}
-      </div>
+      <PageHero
+        title="Testimonials"
+        crumbs={[{ label: 'Testimonials' }]}
+        sub="The impact of my work, in their words."
+        onEdit={editFor('testimonials')}
+      />
       <section className="section">
         <div className="container">
           <Reveal>

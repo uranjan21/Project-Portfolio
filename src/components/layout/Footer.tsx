@@ -1,7 +1,60 @@
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { RESUME_URL } from '../../api/client';
+import { api, RESUME_URL } from '../../api/client';
 import { useAdminUI } from '../../context/AdminUIContext';
 import { usePortfolio } from '../../context/PortfolioContext';
+import { Pill } from '../ui/Pill';
+
+const SOCIAL_ICONS: Record<string, string> = {
+  github: '🐙',
+  linkedin: '💼',
+  twitter: '𝕏',
+  website: '🌐',
+};
+
+function Newsletter() {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!email || status === 'sending') return;
+    setStatus('sending');
+    try {
+      // Newsletter signups land in the same admin messages inbox.
+      await api.sendContact({
+        name: 'Newsletter signup',
+        email,
+        interest: 'Newsletter',
+        message: 'Please add me to the update list.',
+      });
+      setStatus('done');
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  if (status === 'done') {
+    return <p className="newsletter-done">You’re on the list — talk soon. ✓</p>;
+  }
+  return (
+    <form className="newsletter" onSubmit={submit}>
+      <input
+        type="email"
+        required
+        placeholder="Email address"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        aria-label="Email address for updates"
+      />
+      <button type="submit" disabled={status === 'sending'} aria-label="Subscribe">
+        {status === 'sending' ? '…' : '➤'}
+      </button>
+      {status === 'error' && <span className="form-error">Try again in a minute.</span>}
+    </form>
+  );
+}
 
 export function Footer() {
   const { data, isAdmin, logout } = usePortfolio();
@@ -14,6 +67,14 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="container">
+        <div className="footer-connect">
+          <h2>
+            Let’s <span className="accent">Connect</span> there
+          </h2>
+          <Pill to="/contact" variant="amber" small>
+            Contact Me
+          </Pill>
+        </div>
         <div className="footer-grid">
           <div>
             <div className="logo">
@@ -21,9 +82,19 @@ export function Footer() {
               <em>.</em>
             </div>
             <p className="footer-tag">{profile.seo.metaDescription}</p>
+            <div className="social-row">
+              {links.map(([name, url]) => (
+                <a key={name} href={url} target="_blank" rel="noreferrer" aria-label={name} title={name}>
+                  {SOCIAL_ICONS[name] ?? '🔗'}
+                </a>
+              ))}
+              <a href={`mailto:${profile.email}`} aria-label="Email" title="Email">
+                ✉️
+              </a>
+            </div>
           </div>
           <div className="footer-col">
-            <h4>Pages</h4>
+            <h4>Navigation</h4>
             <nav>
               <Link to="/services">Services</Link>
               <Link to="/about">About</Link>
@@ -31,27 +102,30 @@ export function Footer() {
               <Link to="/blog">Blog</Link>
               <Link to="/testimonials">Testimonials</Link>
               <Link to="/faqs">FAQs</Link>
-              <Link to="/contact">Contact</Link>
             </nav>
           </div>
           <div className="footer-col">
-            <h4>Connect</h4>
+            <h4>Contact</h4>
             <nav>
               <a href={`mailto:${profile.email}`}>{profile.email}</a>
-              {links.map(([name, url]) => (
-                <a key={name} href={url} target="_blank" rel="noreferrer">
-                  {name.charAt(0).toUpperCase() + name.slice(1)}
-                </a>
-              ))}
+              {profile.phone && <span>{profile.phone}</span>}
+              <span>{profile.location}</span>
               <a href={RESUME_URL} download>
                 Download resume (PDF)
               </a>
             </nav>
           </div>
+          <div className="footer-col">
+            <h4>Get the latest information</h4>
+            <Newsletter />
+            <p className="footer-tag" style={{ fontSize: '0.78rem', marginTop: '0.7rem' }}>
+              New projects, articles and launches — no spam.
+            </p>
+          </div>
         </div>
         <div className="footer-bottom">
           <span>
-            © {new Date().getFullYear()} {profile.name}. Designed &amp; built by {profile.name}.
+            Copyright © {new Date().getFullYear()} <em style={{ color: 'var(--amber)', fontStyle: 'normal' }}>{profile.name}</em>. All rights reserved.
           </span>
           {isAdmin ? (
             <button className="admin-link" onClick={logout}>
