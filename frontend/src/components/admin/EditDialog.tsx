@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { PortfolioData, SectionKey } from '../../types/portfolio';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { CONTENT_ICON_NAMES, Icon } from '../ui/Icon';
@@ -21,41 +21,54 @@ interface EditDialogProps {
  * `tabIndex` roving keeps the whole grid a single tab stop.
  */
 function IconPicker({
-  id,
+  label,
   value,
   onChange,
 }: {
-  id: string;
+  label: string;
   value: string;
   onChange: (value: string) => void;
 }) {
+  // Keyed refs rather than a selector built from the label text: arrow keys
+  // must land on the right swatch even if a key is renamed or contains quotes.
+  const swatches = useRef(new Map<string, HTMLButtonElement>());
   const selected = CONTENT_ICON_NAMES.includes(value as IconName) ? value : CONTENT_ICON_NAMES[0];
+
+  const step = (delta: 1 | -1) => {
+    const i = CONTENT_ICON_NAMES.indexOf(selected as IconName);
+    const next = CONTENT_ICON_NAMES[(i + delta + CONTENT_ICON_NAMES.length) % CONTENT_ICON_NAMES.length];
+    onChange(next);
+    swatches.current.get(next)?.focus();
+  };
+
   return (
-    <div className="icon-picker" role="radiogroup" aria-labelledby={id}>
+    <div className="icon-picker" role="radiogroup" aria-label={label}>
       {CONTENT_ICON_NAMES.map((name) => {
         const active = name === selected;
+        const readable = name.replace(/-/g, ' ');
         return (
           <button
             key={name}
+            ref={(el) => {
+              if (el) swatches.current.set(name, el);
+              else swatches.current.delete(name);
+            }}
             type="button"
             role="radio"
             aria-checked={active}
-            aria-label={name.replace(/-/g, ' ')}
-            title={name.replace(/-/g, ' ')}
+            aria-label={readable}
+            title={readable}
             tabIndex={active ? 0 : -1}
             className={`icon-swatch${active ? ' active' : ''}`}
             onClick={() => onChange(name)}
             onKeyDown={(e) => {
-              const delta = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1
-                : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1
-                : 0;
-              if (!delta) return;
-              e.preventDefault();
-              const i = CONTENT_ICON_NAMES.indexOf(selected as IconName);
-              const next = CONTENT_ICON_NAMES[(i + delta + CONTENT_ICON_NAMES.length) % CONTENT_ICON_NAMES.length];
-              onChange(next);
-              // Move focus to whichever swatch just became selected.
-              (e.currentTarget.parentElement?.querySelector(`[aria-label="${next.replace(/-/g, ' ')}"]`) as HTMLElement)?.focus();
+              if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                step(1);
+              } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                step(-1);
+              }
             }}
           >
             <Icon name={name} size={20} />
@@ -79,7 +92,13 @@ function FieldInputs({
     <>
       {fields.map((field) => (
         <div key={field.key}>
-          <label htmlFor={`field-${field.key}`}>{field.label}</label>
+          {/* An icon field renders a radiogroup, not a labelable control — a
+              htmlFor pointing at a non-existent input would just dangle. */}
+          {field.type === 'icon' ? (
+            <span className="field-label">{field.label}</span>
+          ) : (
+            <label htmlFor={`field-${field.key}`}>{field.label}</label>
+          )}
           {field.type === 'textarea' || field.type === 'lines' || field.type === 'pairs' ? (
             <textarea
               id={`field-${field.key}`}
@@ -88,7 +107,7 @@ function FieldInputs({
             />
           ) : field.type === 'icon' ? (
             <IconPicker
-              id={`field-${field.key}`}
+              label={field.label}
               value={values[field.key] ?? ''}
               onChange={(v) => onChange(field.key, v)}
             />

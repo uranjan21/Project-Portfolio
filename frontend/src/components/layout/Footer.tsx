@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { api, RESUME_URL } from '../../api/client';
+import { api, RESUME_DOCX_URL, RESUME_URL } from '../../api/client';
 import { useAdminUI } from '../../context/AdminUIContext';
+import { useAudience } from '../../context/AudienceContext';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Icon } from '../ui/Icon';
 import { Pill } from '../ui/Pill';
@@ -62,6 +63,7 @@ function Newsletter() {
 export function Footer() {
   const { data, isAdmin, logout } = usePortfolio();
   const { openLogin } = useAdminUI();
+  const { audience, openDialog } = useAudience();
   if (!data) return null;
   const { profile } = data;
   const firstName = profile.name.split(' ')[0];
@@ -116,6 +118,9 @@ export function Footer() {
               <a href={RESUME_URL} download>
                 Download resume (PDF)
               </a>
+              <a href={RESUME_DOCX_URL} download>
+                Download resume (Word)
+              </a>
             </nav>
           </div>
           <div className="footer-col">
@@ -130,6 +135,11 @@ export function Footer() {
           <span>
             Copyright © {new Date().getFullYear()} <em style={{ color: 'var(--amber)', fontStyle: 'normal' }}>{profile.name}</em>. All rights reserved.
           </span>
+          {audience && (
+            <button className="admin-link" onClick={openDialog}>
+              Viewing as: {audience.label} — change
+            </button>
+          )}
           {isAdmin ? (
             <button className="admin-link" onClick={logout}>
               Log out of admin

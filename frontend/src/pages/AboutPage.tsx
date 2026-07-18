@@ -1,4 +1,4 @@
-import { RESUME_URL } from '../api/client';
+import { ResumeDownload } from '../components/ui/ResumeDownload';
 import { CtaBand } from '../components/sections/CtaBand';
 import { JourneyTimeline } from '../components/sections/JourneyTimeline';
 import { ToolsGrid } from '../components/sections/ToolsGrid';
@@ -8,12 +8,14 @@ import { Pill } from '../components/ui/Pill';
 import { Reveal, Stagger, StaggerItem } from '../components/ui/Reveal';
 import { SectionHead } from '../components/ui/SectionHead';
 import { useAdminUI } from '../context/AdminUIContext';
+import { focusSkills, useAudience } from '../context/AudienceContext';
 import { usePortfolio } from '../context/PortfolioContext';
 import { usePageMeta } from '../hooks/usePageMeta';
 
 export function AboutPage() {
   const { data } = usePortfolio();
   const { editFor } = useAdminUI();
+  const { audience } = useAudience();
   usePageMeta(data ? `About — ${data.profile.name}` : 'About');
   if (!data) return null;
   const { profile } = data;
@@ -27,7 +29,7 @@ export function AboutPage() {
           </>
         }
         crumbs={[{ label: 'About' }]}
-        sub={profile.tagline}
+        sub={audience?.pitch || profile.tagline}
         onEdit={editFor('profile')}
       />
 
@@ -36,7 +38,7 @@ export function AboutPage() {
           <div className="about-intro">
             <div>
               <div className="prose">
-                <p>{profile.bio}</p>
+                <p>{audience?.aboutBio || profile.bio}</p>
               </div>
               <div className="stats-row light">
                 {profile.stats.map((stat) => (
@@ -49,9 +51,7 @@ export function AboutPage() {
                 ))}
               </div>
               <div className="cta-row" style={{ marginTop: '0.4rem' }}>
-                <Pill href={RESUME_URL} variant="amber" download>
-                  Download my one-page CV
-                </Pill>
+                <ResumeDownload>Download my one-page CV</ResumeDownload>
                 <Pill to="/contact" variant="outline">
                   Get in touch
                 </Pill>
@@ -105,7 +105,7 @@ export function AboutPage() {
                 onEdit={editFor('skills')}
               />
             </div>
-            <ToolsGrid skills={data.skills} />
+            <ToolsGrid skills={focusSkills(data.skills, audience)} />
           </Reveal>
         </div>
       </section>

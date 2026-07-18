@@ -7,6 +7,7 @@ import { EditDialog } from '../admin/EditDialog';
 import { LoginDialog } from '../admin/LoginDialog';
 import { ChatWidget } from '../chat/ChatWidget';
 import { ScrollProgress } from '../ui/ScrollProgress';
+import { WelcomeDialog } from '../ui/WelcomeDialog';
 import { AdminUIContext } from '../../context/AdminUIContext';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Footer } from './Footer';
@@ -114,6 +115,7 @@ export function Layout() {
 
       {isAdmin && <AdminBar />}
       <ChatWidget />
+      <WelcomeDialog />
 
       <AnimatePresence>
         {loginOpen && <LoginDialog key="login" onClose={() => setLoginOpen(false)} />}

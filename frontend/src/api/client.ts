@@ -89,3 +89,4 @@ export const api = {
 };
 
 export const RESUME_URL = '/api/resume.pdf';
+export const RESUME_DOCX_URL = '/api/resume.docx';

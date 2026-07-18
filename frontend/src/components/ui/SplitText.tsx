@@ -36,12 +36,25 @@ export function SplitText({
       >
         {words.map((word, i) => (
           // The clipping wrapper is what makes words rise out of a mask rather
-          // than simply fading in.
-          <span key={`${word}-${i}`} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
+          // than simply fading in. The padding/negative-margin pair widens the
+          // clip box just enough for descenders (g, y, p) without changing
+          // layout — otherwise a tight heading line-height shaves them off.
+          <span
+            key={`${word}-${i}`}
+            style={{
+              display: 'inline-block',
+              overflow: 'hidden',
+              verticalAlign: 'bottom',
+              paddingBottom: '0.18em',
+              marginBottom: '-0.18em',
+            }}
+          >
             <motion.span
               style={{ display: 'inline-block', willChange: 'transform' }}
               variants={{
-                hidden: { y: '110%' },
+                // Past 100% + the padding above, so the word still starts
+                // fully out of sight.
+                hidden: { y: '125%' },
                 show: { y: 0, transition: { duration: 0.62, ease: [0.2, 0, 0, 1] } },
               }}
             >

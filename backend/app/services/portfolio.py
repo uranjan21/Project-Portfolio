@@ -91,6 +91,8 @@ def _build_audiences(db) -> list[AudiencePitch]:
             valueProps=r.get("value_props", []),
             ctaLabel=r.get("cta_label", ""),
             ctaHref=r.get("cta_href", ""),
+            aboutBio=r.get("about_bio") or "",
+            focusTags=r.get("focus_tags") or [],
         )
         for r in rows
     ]
@@ -328,6 +330,8 @@ _SECTION_COLUMN_MAPS: dict[str, dict[str, str]] = {
         "valueProps": "value_props",
         "ctaLabel": "cta_label",
         "ctaHref": "cta_href",
+        "aboutBio": "about_bio",
+        "focusTags": "focus_tags",
     },
     "services": {},
     "pricing": {"highlighted": "highlighted"},

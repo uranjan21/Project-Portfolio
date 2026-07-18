@@ -1,115 +1,132 @@
 from __future__ import annotations
 
 import io
+from xml.sax.saxutils import escape
 
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
+from reportlab.platypus import HRFlowable, Paragraph, SimpleDocTemplate, Spacer
 
-from app.services.portfolio import get_portfolio
+from app.services.resume_content import ResumeItem, build_resume_content
 
 
 def generate_resume_pdf() -> bytes:
-    data = get_portfolio()
-    p = data.profile
+    c = build_resume_content()
     buf = io.BytesIO()
 
     doc = SimpleDocTemplate(
         buf,
         pagesize=A4,
-        leftMargin=18 * mm,
-        rightMargin=18 * mm,
-        topMargin=14 * mm,
-        bottomMargin=14 * mm,
+        leftMargin=16 * mm,
+        rightMargin=16 * mm,
+        topMargin=13 * mm,
+        bottomMargin=13 * mm,
+        title=f"{c.name} - Resume",
+        author=c.name,
+        subject=c.title,
+        keywords=c.keywords,
     )
 
     styles = getSampleStyleSheet()
     name_style = ParagraphStyle(
-        "Name", parent=styles["Title"], fontSize=18, spaceAfter=2
+        "Name", parent=styles["Title"], fontName="Helvetica-Bold",
+        fontSize=17, leading=20, spaceAfter=1, alignment=TA_LEFT,
     )
-    subtitle_style = ParagraphStyle(
-        "Subtitle", parent=styles["Normal"], fontSize=10, textColor="#666666", spaceAfter=6
+    contact_style = ParagraphStyle(
+        "Contact", parent=styles["Normal"], fontName="Helvetica",
+        fontSize=9, leading=12, textColor="#333333", spaceAfter=1,
     )
     section_style = ParagraphStyle(
-        "Section", parent=styles["Heading2"], fontSize=12, spaceBefore=10, spaceAfter=4,
-        textColor="#35422d",
+        "Section", parent=styles["Heading2"], fontName="Helvetica-Bold",
+        fontSize=11, leading=13, spaceBefore=8, spaceAfter=2,
+        textColor="#1a1a1a",
     )
     body_style = ParagraphStyle(
-        "Body", parent=styles["Normal"], fontSize=9, leading=12, alignment=TA_LEFT,
+        "Body", parent=styles["Normal"], fontName="Helvetica",
+        fontSize=9.5, leading=12.5, alignment=TA_LEFT, spaceAfter=1,
     )
     bullet_style = ParagraphStyle(
-        "Bullet", parent=body_style, leftIndent=12, bulletIndent=0,
+        "Bullet", parent=body_style, leftIndent=10, bulletIndent=0,
+    )
+    tech_style = ParagraphStyle(
+        "Tech", parent=body_style, leftIndent=10, textColor="#333333", spaceAfter=4,
     )
 
     story: list = []
 
-    story.append(Paragraph(p.name, name_style))
-    story.append(
-        Paragraph(f"{p.title} &nbsp;|&nbsp; {p.location} &nbsp;|&nbsp; {p.email}", subtitle_style)
-    )
+    def section(title: str):
+        story.append(Paragraph(title, section_style))
+        story.append(HRFlowable(width="100%", thickness=0.7, color="#1a1a1a", spaceAfter=3))
 
-    links = []
-    if p.links.github:
-        links.append(p.links.github)
-    if p.links.linkedin:
-        links.append(p.links.linkedin)
-    if links:
-        story.append(Paragraph(" &nbsp;|&nbsp; ".join(links), subtitle_style))
-
-    story.append(Spacer(1, 4))
-    story.append(Paragraph("Summary", section_style))
-    story.append(Paragraph(p.bio, body_style))
-
-    if data.skills:
-        story.append(Paragraph("Skills", section_style))
-        by_cat: dict[str, list[str]] = {}
-        for s in data.skills:
-            by_cat.setdefault(s.category, []).append(s.name)
-        for cat, names in by_cat.items():
-            story.append(
-                Paragraph(f"<b>{cat}:</b> {', '.join(names)}", body_style)
-            )
-
-    if data.experiences:
-        story.append(Paragraph("Experience", section_style))
-        for exp in data.experiences:
+    def items(title: str, entries: list[ResumeItem]):
+        if not entries:
+            return
+        section(title)
+        for it in entries:
             story.append(
                 Paragraph(
-                    f"<b>{exp.role}</b> at {exp.company} &nbsp;|&nbsp; {exp.period} &nbsp;|&nbsp; {exp.location}",
+                    f"- <b>{escape(it.title)}</b> ({escape(it.year)}): {escape(it.description)}",
+                    bullet_style,
+                )
+            )
+
+    # ---- Header: plain-text contact block (no tables, no images) ----
+    story.append(Paragraph(escape(c.name), name_style))
+    story.append(Paragraph(escape(c.title), contact_style))
+    story.append(Paragraph(escape(c.contact_line), contact_style))
+    if c.links:
+        story.append(Paragraph(" | ".join(escape(l) for l in c.links), contact_style))
+    story.append(Spacer(1, 2))
+
+    section("PROFESSIONAL SUMMARY")
+    story.append(Paragraph(escape(c.summary), body_style))
+
+    if c.skills:
+        section("TECHNICAL SKILLS")
+        for cat, names in c.skills:
+            story.append(Paragraph(f"<b>{escape(cat)}:</b> {escape(names)}", body_style))
+
+    if c.experiences:
+        section("PROFESSIONAL EXPERIENCE")
+        for exp in c.experiences:
+            story.append(
+                Paragraph(
+                    f"<b>{escape(exp.role)}</b>, {escape(exp.company)} | {escape(exp.location)} | {escape(exp.period)}",
                     body_style,
                 )
             )
-            for h in exp.highlights[:4]:
-                story.append(Paragraph(f"• {h}", bullet_style))
+            for h in exp.bullets:
+                story.append(Paragraph(f"- {escape(h)}", bullet_style))
+            if exp.tech:
+                story.append(
+                    Paragraph(f"<b>Technologies:</b> {escape(', '.join(exp.tech))}", tech_style)
+                )
 
-    if data.projects:
-        story.append(Paragraph("Projects", section_style))
-        for proj in data.projects[:4]:
-            tech = ", ".join(proj.tech)
+    if c.projects:
+        section("PROJECTS")
+        for proj in c.projects:
             story.append(
                 Paragraph(
-                    f"<b>{proj.title}</b> [{proj.tag}] — {tech}",
+                    f"<b>{escape(proj.title)}</b> | {escape(', '.join(proj.tech))}",
                     body_style,
                 )
             )
-            story.append(Paragraph(proj.description[:200], bullet_style))
+            story.append(Paragraph(f"- {escape(proj.description)}", bullet_style))
 
-    if data.education:
-        story.append(Paragraph("Education", section_style))
-        for ed in data.education:
-            detail = f" — {ed.detail}" if ed.detail else ""
+    if c.education:
+        section("EDUCATION")
+        for ed in c.education:
             story.append(
-                Paragraph(f"<b>{ed.degree}</b>, {ed.institution} ({ed.period}){detail}", body_style)
+                Paragraph(
+                    f"<b>{escape(ed.degree)}</b>, {escape(ed.institution)} | {escape(ed.period)}",
+                    body_style,
+                )
             )
 
-    if data.achievements:
-        story.append(Paragraph("Achievements", section_style))
-        for ach in data.achievements:
-            story.append(
-                Paragraph(f"• <b>{ach.title}</b> ({ach.year}): {ach.description}", bullet_style)
-            )
+    items("ACHIEVEMENTS &amp; AWARDS", c.awards)
+    items("CERTIFICATIONS", c.certifications)
 
     doc.build(story)
     return buf.getvalue()

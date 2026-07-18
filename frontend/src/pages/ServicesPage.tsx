@@ -5,12 +5,14 @@ import { PricingBand } from '../components/sections/PricingBand';
 import { PageHero } from '../components/ui/PageHero';
 import { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useAdminUI } from '../context/AdminUIContext';
+import { focusServices, useAudience } from '../context/AudienceContext';
 import { usePortfolio } from '../context/PortfolioContext';
 import { usePageMeta } from '../hooks/usePageMeta';
 
 export function ServicesPage() {
   const { data } = usePortfolio();
   const { editFor } = useAdminUI();
+  const { audience } = useAudience();
   usePageMeta(data ? `Services — ${data.profile.name}` : 'Services');
   if (!data) return null;
 
@@ -28,7 +30,7 @@ export function ServicesPage() {
             </h2>
           </div>
           <Stagger className="grid-3">
-            {data.services.map((service) => (
+            {focusServices(data.services, audience).map((service) => (
               <StaggerItem key={service.id}>
                 <ServiceCard service={service} />
               </StaggerItem>

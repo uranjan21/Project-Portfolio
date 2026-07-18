@@ -43,6 +43,8 @@ class AudiencePitch(BaseModel):
     valueProps: list[str] = []
     ctaLabel: str = ""
     ctaHref: str = ""
+    aboutBio: str = ""
+    focusTags: list[str] = []
 
 
 class Testimonial(BaseModel):

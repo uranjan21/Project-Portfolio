@@ -859,7 +859,9 @@ main:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--amber-deep);
+  /* brand-ink, not amber-deep: an amber icon on the amber-soft circle only
+     reaches ~2.4:1 in light mode, under the 3:1 floor for non-text contrast. */
+  color: var(--brand-ink);
   margin-bottom: 1.1rem;
 }
 
@@ -1105,7 +1107,6 @@ main:focus {
   color: var(--ink);
   font-weight: 700;
   margin-left: 0.4rem;
-  letter-spacing: 0;
 }
 
 .testimonial-card blockquote {
@@ -2117,7 +2118,6 @@ main:focus {
 .contact-info .info-row .icon-circle {
   width: 44px;
   height: 44px;
-  font-size: 1.1rem;
   margin: 0;
   background: var(--amber);
   color: var(--green-deep);
@@ -2149,10 +2149,12 @@ main:focus {
   border-color: var(--brand-ink);
 }
 
+/* Same amber-on-amber-soft trap as .icon-circle (~2.3:1 in light) — the amber
+   fill and border carry the selected state, the glyph itself stays brand-ink. */
 .icon-swatch.active {
   background: var(--amber-soft);
   border-color: var(--amber-deep);
-  color: var(--amber-deep);
+  color: var(--brand-ink);
 }
 
 /* ---------- Dialogs (admin) ---------- */
@@ -2206,7 +2208,8 @@ main:focus {
   border-color: var(--amber);
 }
 
-.dialog label {
+.dialog label,
+.dialog .field-label {
   display: block;
   font-size: 0.82rem;
   font-weight: 600;
@@ -2258,6 +2261,50 @@ main:focus {
   font-size: 0.76rem;
   color: var(--muted);
   margin-top: 0.25rem;
+}
+
+/* Welcome (who's visiting?) dialog */
+.welcome-sub {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin: -0.4rem 0 1.2rem;
+}
+
+.welcome-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.welcome-option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: left;
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.1rem;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+
+.welcome-option:hover,
+.welcome-option:focus-visible {
+  border-color: var(--amber);
+  background: var(--amber-soft);
+}
+
+.welcome-option-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--green);
+}
+
+.welcome-option-headline {
+  font-size: 0.9rem;
+  color: var(--muted);
 }
 
 /* Collection editor rows */
@@ -2998,4 +3045,39 @@ main:focus {
     animation-duration: 2s !important;
     animation-iteration-count: infinite !important;
   }
+}
+
+/* ---------- Resume download menu ---------- */
+.resume-dl {
+  position: relative;
+  display: inline-flex;
+}
+
+.resume-dl-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 170px;
+  padding: 0.35rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lift);
+  z-index: 40;
+}
+
+.resume-dl-menu a {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+
+.resume-dl-menu a:hover {
+  background: var(--green-soft);
 }

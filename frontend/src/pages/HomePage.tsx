@@ -16,11 +16,12 @@ import { ToolsGrid } from '../components/sections/ToolsGrid';
 import { CountUp } from '../components/ui/CountUp';
 import { Icon } from '../components/ui/Icon';
 import { Pill } from '../components/ui/Pill';
+import { ResumeDownload } from '../components/ui/ResumeDownload';
 import { Reveal, Stagger, StaggerItem } from '../components/ui/Reveal';
 import { SectionHead } from '../components/ui/SectionHead';
 import { useAdminUI } from '../context/AdminUIContext';
+import { focusProjects, focusServices, focusSkills, useAudience } from '../context/AudienceContext';
 import { usePortfolio } from '../context/PortfolioContext';
-import { useAudience } from '../hooks/useAudience';
 import { usePageMeta } from '../hooks/usePageMeta';
 
 const HERO_STAGGER = {
@@ -64,7 +65,7 @@ function SpinBadge({ style }: { style?: MotionStyle }) {
 export function HomePage() {
   const { data } = usePortfolio();
   const { editFor } = useAdminUI();
-  const { audience, select } = useAudience(data?.audiences ?? []);
+  const { audience, select } = useAudience();
 
   // Scroll-linked hero depth. One scroll subscription drives three layers at
   // different rates — transform/opacity only, so it stays on the compositor.
@@ -88,7 +89,8 @@ export function HomePage() {
 
   const { profile } = data;
   const firstName = profile.name.split(' ')[0];
-  const orbitChips = data.skills.slice(0, 4).map((s) => s.name.split(' /')[0]);
+  const skills = focusSkills(data.skills, audience);
+  const orbitChips = skills.slice(0, 4).map((s) => s.name.split(' /')[0]);
   const ctaIsResume = audience?.ctaHref === RESUME_URL;
   const latestPosts = [...data.blogPosts].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
 
@@ -141,20 +143,18 @@ export function HomePage() {
               <p className="pitch-line">{audience.headline}</p>
               <p className="lede">{audience.pitch}</p>
               <div className="cta-row">
-                {audience.ctaHref.startsWith('/') && !audience.ctaHref.startsWith('/api') ? (
+                {ctaIsResume ? (
+                  <ResumeDownload>{audience.ctaLabel}</ResumeDownload>
+                ) : audience.ctaHref.startsWith('/') && !audience.ctaHref.startsWith('/api') ? (
                   <Pill to={audience.ctaHref} variant="amber">
                     {audience.ctaLabel}
                   </Pill>
                 ) : (
-                  <Pill href={audience.ctaHref} variant="amber" download={ctaIsResume} newTab={audience.ctaHref.startsWith('http')}>
+                  <Pill href={audience.ctaHref} variant="amber" newTab={audience.ctaHref.startsWith('http')}>
                     {audience.ctaLabel}
                   </Pill>
                 )}
-                {!ctaIsResume && (
-                  <Pill href={RESUME_URL} variant="outline" download>
-                    Download CV
-                  </Pill>
-                )}
+                {!ctaIsResume && <ResumeDownload variant="outline">Download CV</ResumeDownload>}
                 {editFor('profile') && (
                   <button className="edit-chip" onClick={editFor('profile')}>
                     <Icon name="edit" size={14} /> Edit profile
@@ -166,9 +166,7 @@ export function HomePage() {
             <>
               <p className="lede">{profile.bio}</p>
               <div className="cta-row">
-                <Pill href={RESUME_URL} variant="amber" download>
-                  Download CV
-                </Pill>
+                <ResumeDownload>Download CV</ResumeDownload>
               </div>
             </>
           )}
@@ -241,7 +239,7 @@ export function HomePage() {
             />
           </Reveal>
           <Stagger className="grid-3">
-            {data.services.slice(0, 3).map((service) => (
+            {focusServices(data.services, audience).slice(0, 3).map((service) => (
               <StaggerItem key={service.id}>
                 <ServiceCard service={service} />
               </StaggerItem>
@@ -274,7 +272,7 @@ export function HomePage() {
                 <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', margin: '0.6rem 0 1rem' }}>
                   Who is <span className="accent">{profile.name}?</span>
                 </h2>
-                <p>{profile.bio}</p>
+                <p>{audience?.aboutBio || profile.bio}</p>
                 <div className="stats-row">
                   {profile.stats.map((stat) => (
                     <div className="stat" key={stat.label}>
@@ -286,9 +284,7 @@ export function HomePage() {
                   ))}
                 </div>
                 <div className="cta-row" style={{ marginTop: 0, alignItems: 'center' }}>
-                  <Pill href={RESUME_URL} variant="amber" download>
-                    Download CV
-                  </Pill>
+                  <ResumeDownload>Download CV</ResumeDownload>
                   <span className="signature">{firstName}</span>
                 </div>
               </div>
@@ -347,7 +343,7 @@ export function HomePage() {
                 onEdit={editFor('skills')}
               />
             </div>
-            <ToolsGrid skills={data.skills} />
+            <ToolsGrid skills={skills} />
           </Reveal>
         </div>
       </section>
@@ -372,7 +368,7 @@ export function HomePage() {
             />
           </Reveal>
           <Stagger className="grid-2">
-            {data.projects.slice(0, 2).map((project) => (
+            {focusProjects(data.projects, audience).slice(0, 2).map((project) => (
               <StaggerItem key={project.id}>
                 <ProjectCard project={project} />
               </StaggerItem>

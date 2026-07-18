@@ -1,6 +1,7 @@
 import { MotionConfig } from 'framer-motion';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
+import { AudienceProvider } from './context/AudienceContext';
 import { PortfolioProvider } from './context/PortfolioContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AboutPage } from './pages/AboutPage';
@@ -21,6 +22,7 @@ export default function App() {
   return (
     <ThemeProvider>
     <PortfolioProvider>
+    <AudienceProvider>
       <MotionConfig reducedMotion="user">
         <BrowserRouter>
         <Routes>
@@ -42,6 +44,7 @@ export default function App() {
         </Routes>
         </BrowserRouter>
       </MotionConfig>
+    </AudienceProvider>
     </PortfolioProvider>
     </ThemeProvider>
   );

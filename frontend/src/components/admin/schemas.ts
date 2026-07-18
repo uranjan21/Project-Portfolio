@@ -75,6 +75,8 @@ export const SECTION_SCHEMAS: Record<SectionKey, SectionSchema> = {
       { key: 'valueProps', label: 'Value propositions', type: 'lines', hint: 'One per line, format: "Title — supporting detail"' },
       { key: 'ctaLabel', label: 'CTA button text', type: 'text' },
       { key: 'ctaHref', label: 'CTA link', type: 'text', hint: 'e.g. /api/resume.pdf, mailto:…, or https://…' },
+      { key: 'aboutBio', label: 'About copy for this visitor', type: 'textarea', hint: 'Shown on the About page and Home about band; leave blank to use the profile bio' },
+      { key: 'focusTags', label: 'Focus tags', type: 'tags', hint: 'Comma-separated; matching projects and skills are shown first for this visitor' },
     ],
   },
   testimonials: {

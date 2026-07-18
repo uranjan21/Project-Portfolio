@@ -50,6 +50,10 @@ export interface AudiencePitch {
   valueProps: string[];
   ctaLabel: string;
   ctaHref: string;
+  /** Audience-specific About copy; falls back to profile.bio when blank. */
+  aboutBio?: string;
+  /** Tags/tech to surface first when ordering projects and skills. */
+  focusTags?: string[];
 }
 
 export interface Testimonial {

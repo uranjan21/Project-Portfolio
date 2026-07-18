@@ -4,18 +4,20 @@ import { CtaBand } from '../components/sections/CtaBand';
 import { PageHero } from '../components/ui/PageHero';
 import { Reveal } from '../components/ui/Reveal';
 import { useAdminUI } from '../context/AdminUIContext';
+import { focusProjects, useAudience } from '../context/AudienceContext';
 import { usePortfolio } from '../context/PortfolioContext';
 import { usePageMeta } from '../hooks/usePageMeta';
 
 export function ProjectsPage() {
   const { data } = usePortfolio();
   const { editFor } = useAdminUI();
+  const { audience } = useAudience();
   const [tag, setTag] = useState<string | null>(null);
   usePageMeta(data ? `Projects — ${data.profile.name}` : 'Projects');
   if (!data) return null;
 
   const allTags = [...new Set(data.projects.map((p) => p.tag))].sort();
-  const projects = data.projects.filter((p) => !tag || p.tag === tag);
+  const projects = focusProjects(data.projects, audience).filter((p) => !tag || p.tag === tag);
 
   return (
     <>
