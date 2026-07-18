@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { ServiceCard } from '../components/cards/ServiceCard';
 import { ContactBand } from '../components/sections/ContactBand';
+import { Icon } from '../components/ui/Icon';
 import { PageHero } from '../components/ui/PageHero';
 import { Pill } from '../components/ui/Pill';
 import { Reveal, Stagger, StaggerItem } from '../components/ui/Reveal';
@@ -43,7 +44,9 @@ export function ServiceDetailsPage() {
         <div className="container">
           <Reveal>
             <div className="service-media">
-              <span className="service-media-emoji">{service.emoji}</span>
+              <span className="service-media-icon">
+                <Icon name={service.icon} size={44} />
+              </span>
               <h1>{service.title}</h1>
               <p>{service.summary}</p>
             </div>
@@ -69,12 +72,16 @@ export function ServiceDetailsPage() {
             <div className="check-chips">
               {service.deliverables.map((d, i) => (
                 <span className="check-chip" key={i}>
-                  <span className="check-dot">✓</span> {d}
+                  <span className="check-dot">
+                    <Icon name="check" size={12} />
+                  </span> {d}
                 </span>
               ))}
               {service.tech.map((t) => (
                 <span className="check-chip soft" key={t}>
-                  <span className="check-dot">✓</span> {t}
+                  <span className="check-dot">
+                    <Icon name="check" size={12} />
+                  </span> {t}
                 </span>
               ))}
             </div>

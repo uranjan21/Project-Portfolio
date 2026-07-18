@@ -1,6 +1,6 @@
 import { RESUME_URL } from '../api/client';
 import { CtaBand } from '../components/sections/CtaBand';
-import { JourneyCards } from '../components/sections/JourneyCards';
+import { JourneyTimeline } from '../components/sections/JourneyTimeline';
 import { ToolsGrid } from '../components/sections/ToolsGrid';
 import { CountUp } from '../components/ui/CountUp';
 import { PageHero } from '../components/ui/PageHero';
@@ -33,42 +33,43 @@ export function AboutPage() {
 
       <section className="section" style={{ paddingTop: '2.4rem' }}>
         <div className="container">
-          <div className="prose">
-            <p>{profile.bio}</p>
-          </div>
-          <div className="stats-row light">
-            {profile.stats.map((stat) => (
-              <div className="stat" key={stat.label}>
-                <div className="value">
-                  <CountUp value={stat.value} />
-                </div>
-                <div className="label">{stat.label}</div>
+          <div className="about-intro">
+            <div>
+              <div className="prose">
+                <p>{profile.bio}</p>
               </div>
-            ))}
+              <div className="stats-row light">
+                {profile.stats.map((stat) => (
+                  <div className="stat" key={stat.label}>
+                    <div className="value">
+                      <CountUp value={stat.value} />
+                    </div>
+                    <div className="label">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="cta-row" style={{ marginTop: '0.4rem' }}>
+                <Pill href={RESUME_URL} variant="amber" download>
+                  Download my one-page CV
+                </Pill>
+                <Pill to="/contact" variant="outline">
+                  Get in touch
+                </Pill>
+              </div>
+            </div>
+            <div className="hero-visual about-intro-visual">
+              <div className="blob cutout">
+                <img
+                  src={profile.photoUrl || '/images/utsav-hero.webp'}
+                  alt=""
+                  width={520}
+                  height={520}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </div>
           </div>
-          <div className="cta-row" style={{ marginTop: '0.4rem' }}>
-            <Pill href={RESUME_URL} variant="amber" download>
-              Download my one-page CV
-            </Pill>
-            <Pill to="/contact" variant="outline">
-              Get in touch
-            </Pill>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="container">
-          <Reveal>
-            <figure className="about-banner">
-              <img
-                src="/images/candid-beige.jpg"
-                alt={profile.name}
-                loading="lazy"
-                decoding="async"
-              />
-            </figure>
-          </Reveal>
         </div>
       </section>
 
@@ -85,7 +86,7 @@ export function AboutPage() {
                 }
               />
             </div>
-            <JourneyCards education={data.education} experiences={data.experiences} detailed />
+            <JourneyTimeline education={data.education} experiences={data.experiences} detailed />
           </Reveal>
         </div>
       </section>

@@ -102,7 +102,7 @@ def _build_services(db) -> list[Service]:
         Service(
             id=_row_id(r),
             title=r["title"],
-            emoji=r.get("emoji", ""),
+            icon=r.get("icon") or "chip",
             summary=r.get("summary", ""),
             description=r.get("description", ""),
             deliverables=r.get("deliverables", []),
@@ -149,7 +149,6 @@ def _build_skills(db) -> list[Skill]:
             name=r["name"],
             category=r.get("category", ""),
             level=r.get("level", 0),
-            emoji=r.get("emoji"),
         )
         for r in rows
     ]
@@ -226,7 +225,7 @@ def _build_ventures(db) -> list[Venture]:
         Venture(
             id=_row_id(r),
             title=r["title"],
-            emoji=r.get("emoji", ""),
+            icon=r.get("icon") or "chip",
             tagline=r.get("tagline", ""),
             description=r.get("description", ""),
             live=r.get("live", False),

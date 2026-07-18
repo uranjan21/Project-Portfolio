@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import type { PortfolioData, SectionKey } from '../../types/portfolio';
 import { usePortfolio } from '../../context/PortfolioContext';
+import { CONTENT_ICON_NAMES, Icon } from '../ui/Icon';
+import type { IconName } from '../ui/Icon';
 import { Dialog } from './Dialog';
 import { applyInputString, toInputString } from './fieldValues';
 import { SECTION_SCHEMAS } from './schemas';
@@ -11,6 +13,57 @@ type AnyRecord = Record<string, unknown>;
 interface EditDialogProps {
   section: SectionKey;
   onClose: () => void;
+}
+
+/**
+ * Radio-group grid of icon swatches. A radio group (not a listbox) because
+ * exactly one key is selected and arrow keys should move between options —
+ * `tabIndex` roving keeps the whole grid a single tab stop.
+ */
+function IconPicker({
+  id,
+  value,
+  onChange,
+}: {
+  id: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const selected = CONTENT_ICON_NAMES.includes(value as IconName) ? value : CONTENT_ICON_NAMES[0];
+  return (
+    <div className="icon-picker" role="radiogroup" aria-labelledby={id}>
+      {CONTENT_ICON_NAMES.map((name) => {
+        const active = name === selected;
+        return (
+          <button
+            key={name}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            aria-label={name.replace(/-/g, ' ')}
+            title={name.replace(/-/g, ' ')}
+            tabIndex={active ? 0 : -1}
+            className={`icon-swatch${active ? ' active' : ''}`}
+            onClick={() => onChange(name)}
+            onKeyDown={(e) => {
+              const delta = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1
+                : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1
+                : 0;
+              if (!delta) return;
+              e.preventDefault();
+              const i = CONTENT_ICON_NAMES.indexOf(selected as IconName);
+              const next = CONTENT_ICON_NAMES[(i + delta + CONTENT_ICON_NAMES.length) % CONTENT_ICON_NAMES.length];
+              onChange(next);
+              // Move focus to whichever swatch just became selected.
+              (e.currentTarget.parentElement?.querySelector(`[aria-label="${next.replace(/-/g, ' ')}"]`) as HTMLElement)?.focus();
+            }}
+          >
+            <Icon name={name} size={20} />
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 function FieldInputs({
@@ -32,6 +85,12 @@ function FieldInputs({
               id={`field-${field.key}`}
               value={values[field.key] ?? ''}
               onChange={(e) => onChange(field.key, e.target.value)}
+            />
+          ) : field.type === 'icon' ? (
+            <IconPicker
+              id={`field-${field.key}`}
+              value={values[field.key] ?? ''}
+              onChange={(v) => onChange(field.key, v)}
             />
           ) : field.type === 'boolean' ? (
             <select
@@ -175,8 +234,17 @@ export function EditDialog({ section, onClose }: EditDialogProps) {
             {items.map((item, i) => (
               <div className="item-row" key={String(item.id ?? i)}>
                 <span className="item-title">{String(item[schema.labelKey] ?? '(new item)')}</span>
-                <button className="mini" onClick={() => move(i, -1)} disabled={i === 0}>▲</button>
-                <button className="mini" onClick={() => move(i, 1)} disabled={i === items.length - 1}>▼</button>
+                <button className="mini" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move up">
+                  <Icon name="chevron-up" size={14} />
+                </button>
+                <button
+                  className="mini"
+                  onClick={() => move(i, 1)}
+                  disabled={i === items.length - 1}
+                  aria-label="Move down"
+                >
+                  <Icon name="chevron-down" size={14} />
+                </button>
                 <button className="mini" onClick={() => startEdit(i)}>Edit</button>
                 <button className="mini danger" onClick={() => removeItem(i)}>Del</button>
               </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { api } from '../../api/client';
 import { usePortfolio } from '../../context/PortfolioContext';
+import { Icon } from '../ui/Icon';
 
 interface Message {
   id: number;
@@ -11,7 +12,7 @@ interface Message {
 
 let nextId = 1;
 
-const ASSISTANT_AVATAR = '/images/caricature.png';
+const ASSISTANT_AVATAR = '/images/utsav-caricature.webp';
 
 const STARTERS = [
   'What’s your experience?',
@@ -87,19 +88,20 @@ export function ChatWidget() {
             <div className="chat-head">
               <span className="dot" /> COMM CHANNEL // ASSISTANT
             </div>
-            <div className="chat-log" ref={logRef}>
+            {/* Replies arrive asynchronously, so the log has to announce itself. */}
+            <div className="chat-log" ref={logRef} role="log" aria-live="polite" aria-label="Chat transcript">
               {messages.map((msg) => (
                 <div key={msg.id} className={`chat-row ${msg.from}`}>
                   {msg.from === 'bot' && (
-                    <img className="chat-avatar" src={ASSISTANT_AVATAR} alt="" decoding="async" />
+                    <img className="chat-avatar" src={ASSISTANT_AVATAR} alt="" width={28} height={28} decoding="async" />
                   )}
                   <div className={`chat-msg ${msg.from}`}>{msg.text}</div>
                 </div>
               ))}
               {busy && (
                 <div className="chat-row bot">
-                  <img className="chat-avatar" src={ASSISTANT_AVATAR} alt="" decoding="async" />
-                  <div className="chat-msg bot typing">…</div>
+                  <img className="chat-avatar" src={ASSISTANT_AVATAR} alt="" width={28} height={28} decoding="async" />
+                  <div className="chat-msg bot typing" aria-label="Assistant is typing" />
                 </div>
               )}
               {showStarters && messages.length > 0 && (
@@ -115,6 +117,7 @@ export function ChatWidget() {
             <div className="chat-input-row">
               <input
                 placeholder="Ask about me…"
+                aria-label="Ask a question about the portfolio"
                 value={input}
                 maxLength={1000}
                 onChange={(e) => setInput(e.target.value)}
@@ -134,7 +137,7 @@ export function ChatWidget() {
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? 'Close chat assistant' : 'Open chat assistant'}
       >
-        {open ? '×' : '✦'}
+        <Icon name={open ? 'close' : 'sparkle'} size={22} />
       </button>
     </>
   );

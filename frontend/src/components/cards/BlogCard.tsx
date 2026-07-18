@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { BlogPost } from '../../types/portfolio';
+import { Icon } from '../ui/Icon';
 
 export function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -14,7 +15,18 @@ export function BlogCard({ post }: { post: BlogPost }) {
   return (
     <div className="card blog-card">
       <Link to={`/blog/${post.slug}`} className="blog-cover">
-        {post.coverUrl ? <img src={post.coverUrl} alt="" loading="lazy" decoding="async" /> : <span>{post.title}</span>}
+        {post.coverUrl ? (
+          <img
+            src={post.coverUrl}
+            alt={`Cover image for “${post.title}”`}
+            width={720}
+            height={315}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <span>{post.title}</span>
+        )}
         <span className="cover-chips">
           {post.tags[0] && <span className="cover-chip">{post.tags[0]}</span>}
           <span className="cover-chip date">{formatDate(post.date)}</span>
@@ -27,7 +39,10 @@ export function BlogCard({ post }: { post: BlogPost }) {
         <h3>{post.title}</h3>
         <p>{post.excerpt}</p>
         <Link className="more-link" to={`/blog/${post.slug}`}>
-          Read article <span className="tick">→</span>
+          Read article
+          <span className="tick">
+            <Icon name="arrow-right" size={15} />
+          </span>
         </Link>
       </div>
     </div>

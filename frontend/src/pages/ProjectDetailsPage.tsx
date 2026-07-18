@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { ProjectCard } from '../components/cards/ProjectCard';
 import { CtaBand } from '../components/sections/CtaBand';
+import { Icon } from '../components/ui/Icon';
 import { PageHero } from '../components/ui/PageHero';
 import { Pill } from '../components/ui/Pill';
 import { RichText } from '../components/ui/RichText';
@@ -31,7 +32,14 @@ export function ProjectDetailsPage() {
       {project.coverUrl && (
         <div className="container">
           <div className="project-detail-cover">
-            <img src={project.coverUrl} alt={project.title} decoding="async" />
+            <img
+              src={project.coverUrl}
+              alt={`Cover image for ${project.title}`}
+              width={1200}
+              height={525}
+              fetchPriority="high"
+              decoding="async"
+            />
           </div>
         </div>
       )}
@@ -66,12 +74,16 @@ export function ProjectDetailsPage() {
                 <div className="tag-chips" style={{ marginTop: '0.35rem' }}>
                   {project.liveUrl && (
                     <a href={project.liveUrl} target="_blank" rel="noreferrer">
-                      <span>Live demo ↗</span>
+                      <span>
+                        Live demo <Icon name="arrow-up-right" size={13} />
+                      </span>
                     </a>
                   )}
                   {project.repoUrl && (
                     <a href={project.repoUrl} target="_blank" rel="noreferrer">
-                      <span>Source ↗</span>
+                      <span>
+                        Source <Icon name="arrow-up-right" size={13} />
+                      </span>
                     </a>
                   )}
                 </div>

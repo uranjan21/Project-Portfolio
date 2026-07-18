@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAdminUI } from '../../context/AdminUIContext';
 import { usePortfolio } from '../../context/PortfolioContext';
+import { Icon } from '../ui/Icon';
 import { Reveal } from '../ui/Reveal';
 
 /** Dark FAQ accordion band for the home page — open item turns amber. */
@@ -26,7 +27,7 @@ export function FaqBand({ limit = 5 }: { limit?: number }) {
               </h2>
               {editFor('faqs') && (
                 <button className="edit-chip" onClick={editFor('faqs')} style={{ marginTop: '0.9rem' }}>
-                  ✎ Edit FAQs
+                  <Icon name="edit" size={14} /> Edit FAQs
                 </button>
               )}
             </div>
@@ -37,8 +38,10 @@ export function FaqBand({ limit = 5 }: { limit?: number }) {
                   <div className={`faq-d-item${open ? ' open' : ''}`} key={faq.id}>
                     <button
                       className="faq-q"
+                      id={`faq-q-${faq.id}`}
                       onClick={() => setOpenId(open ? null : faq.id)}
                       aria-expanded={open}
+                      aria-controls={`faq-a-${faq.id}`}
                     >
                       {faq.question}
                       <motion.span className="faq-plus" animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.2 }}>
@@ -48,6 +51,9 @@ export function FaqBand({ limit = 5 }: { limit?: number }) {
                     <AnimatePresence initial={false}>
                       {open && (
                         <motion.div
+                          id={`faq-a-${faq.id}`}
+                          role="region"
+                          aria-labelledby={`faq-q-${faq.id}`}
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
@@ -65,7 +71,10 @@ export function FaqBand({ limit = 5 }: { limit?: number }) {
             {data.faqs.length > limit && (
               <div style={{ textAlign: 'center', marginTop: '1.4rem' }}>
                 <Link className="more-link" to="/faqs" style={{ color: 'var(--on-dark)' }}>
-                  All questions <span className="tick">→</span>
+                  All questions
+                  <span className="tick">
+                    <Icon name="arrow-right" size={15} />
+                  </span>
                 </Link>
               </div>
             )}

@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Marquee } from '../sections/Marquee';
+import { Icon } from './Icon';
+import { SplitText } from './SplitText';
 
 interface Crumb {
   label: string;
@@ -23,7 +25,9 @@ export function PageHero({ title, crumbs = [], sub, onEdit, marquee }: PageHeroP
   return (
     <>
       <div className="page-hero-band">
-        <h1>{title}</h1>
+        {/* Plain-string titles get the word-rise reveal; composite JSX titles
+            (which carry their own <span className="accent">) render as-is. */}
+        {typeof title === 'string' ? <SplitText as="h1" text={title} /> : <h1>{title}</h1>}
         <nav className="crumbs" aria-label="Breadcrumb">
           <Link to="/">Home</Link>
           {crumbs.map((crumb, i) => (
@@ -36,7 +40,7 @@ export function PageHero({ title, crumbs = [], sub, onEdit, marquee }: PageHeroP
         {sub && <p className="sub">{sub}</p>}
         {onEdit && (
           <button className="edit-chip" onClick={onEdit} style={{ marginTop: '1rem' }}>
-            ✎ Edit
+            <Icon name="edit" size={14} /> Edit
           </button>
         )}
       </div>

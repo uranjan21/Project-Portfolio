@@ -7,7 +7,8 @@ export type FieldType =
   | 'boolean' // rendered as a Yes/No select
   | 'tags' // string[] edited as comma-separated text
   | 'lines' // string[] edited as one-entry-per-line textarea
-  | 'pairs'; // {label,value}[] edited as "label | value" lines
+  | 'pairs' // {label,value}[] edited as "label | value" lines
+  | 'icon'; // key into the SVG registry, picked from a swatch grid
 
 export interface FieldSpec {
   /** Dot-path into the edited object, e.g. "links.github". */
@@ -97,7 +98,7 @@ export const SECTION_SCHEMAS: Record<SectionKey, SectionSchema> = {
     labelKey: 'title',
     fields: [
       { key: 'title', label: 'Service title', type: 'text' },
-      { key: 'emoji', label: 'Icon emoji', type: 'text', hint: 'One emoji, e.g. 🖥️' },
+      { key: 'icon', label: 'Icon', type: 'icon' },
       { key: 'summary', label: 'Card summary', type: 'textarea', hint: 'One sentence shown on cards and in Google results' },
       { key: 'description', label: 'Details page description', type: 'textarea', hint: 'Blank line = new paragraph' },
       { key: 'deliverables', label: 'What the client gets', type: 'lines', hint: 'One deliverable per line' },
@@ -126,7 +127,7 @@ export const SECTION_SCHEMAS: Record<SectionKey, SectionSchema> = {
     labelKey: 'title',
     fields: [
       { key: 'title', label: 'Title', type: 'text', hint: 'e.g. The Creator Journey' },
-      { key: 'emoji', label: 'Icon emoji', type: 'text' },
+      { key: 'icon', label: 'Icon', type: 'icon' },
       { key: 'tagline', label: 'Tagline', type: 'text' },
       { key: 'description', label: 'Description', type: 'textarea' },
       { key: 'live', label: 'Launched?', type: 'boolean', hint: 'Off = shown as “coming soon”' },
@@ -157,7 +158,6 @@ export const SECTION_SCHEMAS: Record<SectionKey, SectionSchema> = {
     labelKey: 'name',
     fields: [
       { key: 'name', label: 'Skill name', type: 'text' },
-      { key: 'emoji', label: 'Emoji', type: 'text', hint: 'Single emoji icon for this skill' },
       { key: 'category', label: 'Category', type: 'text', hint: 'e.g. Frontend, Backend, Data, Infrastructure' },
       { key: 'level', label: 'Level (0-100)', type: 'number' },
     ],

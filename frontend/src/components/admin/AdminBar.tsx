@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api/client';
 import { usePortfolio } from '../../context/PortfolioContext';
+import { Icon } from '../ui/Icon';
 import { MessagesInbox } from './MessagesInbox';
 import { QuestionsInbox } from './QuestionsInbox';
 
@@ -36,7 +37,9 @@ export function AdminBar() {
   return (
     <>
       <div className="admin-bar">
-        <span>◆ ADMIN</span>
+        <span>
+          <Icon name="diamond" size={12} /> ADMIN
+        </span>
         <button onClick={() => setPanel('questions')}>
           Questions{openQuestions > 0 && <span className="badge">{openQuestions}</span>}
         </button>

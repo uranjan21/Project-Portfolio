@@ -1,5 +1,8 @@
 import type { MouseEventHandler, ReactNode } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useMagnetic } from '../../hooks/useMagnetic';
+import { Icon } from './Icon';
 
 interface PillProps {
   children: ReactNode;
@@ -16,7 +19,12 @@ interface PillProps {
   type?: 'button' | 'submit';
 }
 
-/** Signature CTA: rounded pill with a trailing circular arrow. */
+const MotionLink = motion.create(Link);
+
+/**
+ * Signature CTA: rounded pill with a trailing arrow, magnetised to the cursor.
+ * The magnetic pull is mouse-only and reduced-motion aware (see `useMagnetic`).
+ */
 export function Pill({
   children,
   variant = 'dark',
@@ -29,37 +37,59 @@ export function Pill({
   disabled,
   type = 'button',
 }: PillProps) {
+  const { ref, x, y, onPointerMove, onPointerLeave } = useMagnetic();
   const className = `pill ${variant}${small ? ' sm' : ''}`;
+  const motionProps = { style: { x, y }, onPointerMove, onPointerLeave };
+
   const inner = (
     <>
       <span>{children}</span>
-      {variant !== 'outline' && <span className="arrow">→</span>}
+      {variant !== 'outline' && (
+        <span className="arrow">
+          <Icon name="arrow-right" size={16} />
+        </span>
+      )}
     </>
   );
 
   if (to) {
     return (
-      <Link className={className} to={to} onClick={onClick}>
+      <MotionLink
+        ref={ref as React.RefObject<HTMLAnchorElement>}
+        className={className}
+        to={to}
+        onClick={onClick}
+        {...motionProps}
+      >
         {inner}
-      </Link>
+      </MotionLink>
     );
   }
   if (href) {
     return (
-      <a
+      <motion.a
+        ref={ref as React.RefObject<HTMLAnchorElement>}
         className={className}
         href={href}
         onClick={onClick}
         {...(download ? { download: true } : {})}
         {...(newTab ? { target: '_blank', rel: 'noreferrer' } : {})}
+        {...motionProps}
       >
         {inner}
-      </a>
+      </motion.a>
     );
   }
   return (
-    <button className={className} onClick={onClick} disabled={disabled} type={type}>
+    <motion.button
+      ref={ref as React.RefObject<HTMLButtonElement>}
+      className={className}
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
+      {...motionProps}
+    >
       {inner}
-    </button>
+    </motion.button>
   );
 }

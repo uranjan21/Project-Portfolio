@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { BlogCard, formatDate, readingTime } from '../components/cards/BlogCard';
 import { CtaBand } from '../components/sections/CtaBand';
+import { Icon } from '../components/ui/Icon';
 import { PageHero } from '../components/ui/PageHero';
 import { RichText } from '../components/ui/RichText';
 import { useAdminUI } from '../context/AdminUIContext';
@@ -47,7 +48,9 @@ export function BlogPostPage() {
             <nav className="post-nav" aria-label="More articles">
               {older ? (
                 <Link to={`/blog/${older.slug}`}>
-                  <div className="nav-label">← Older</div>
+                  <div className="nav-label">
+                    <Icon name="arrow-left" size={14} /> Older
+                  </div>
                   <div className="nav-title">{older.title}</div>
                 </Link>
               ) : (
@@ -55,7 +58,9 @@ export function BlogPostPage() {
               )}
               {newer && (
                 <Link to={`/blog/${newer.slug}`} className="next">
-                  <div className="nav-label">Newer →</div>
+                  <div className="nav-label">
+                    Newer <Icon name="arrow-right" size={14} />
+                  </div>
                   <div className="nav-title">{newer.title}</div>
                 </Link>
               )}

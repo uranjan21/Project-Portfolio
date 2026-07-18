@@ -31,11 +31,19 @@ export function BlogPage() {
         <div className="container">
           {allTags.length > 1 && (
             <div className="filter-chips">
-              <button className={`filter-chip${tag === null ? ' active' : ''}`} onClick={() => setTag(null)}>
+              <button className={`filter-chip${tag === null ? ' active' : ''}`}
+                onClick={() => setTag(null)}
+                aria-pressed={tag === null}
+              >
                 All
               </button>
               {allTags.map((t) => (
-                <button key={t} className={`filter-chip${tag === t ? ' active' : ''}`} onClick={() => setTag(t)}>
+                <button
+                  key={t}
+                  className={`filter-chip${tag === t ? ' active' : ''}`}
+                  onClick={() => setTag(t)}
+                  aria-pressed={tag === t}
+                >
                   {t}
                 </button>
               ))}

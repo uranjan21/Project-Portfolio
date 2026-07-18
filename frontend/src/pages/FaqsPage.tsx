@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CtaBand } from '../components/sections/CtaBand';
 import { PageHero } from '../components/ui/PageHero';
@@ -9,9 +9,17 @@ import { usePageMeta } from '../hooks/usePageMeta';
 
 function FaqItem({ question, answer, defaultOpen }: { question: string; answer: string; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen ?? false);
+  const panelId = useId();
+  const buttonId = useId();
   return (
     <div className="faq-item">
-      <button className="faq-q" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+      <button
+        className="faq-q"
+        id={buttonId}
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-controls={panelId}
+      >
         {question}
         <motion.span className="faq-plus" animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.2 }}>
           +
@@ -20,6 +28,9 @@ function FaqItem({ question, answer, defaultOpen }: { question: string; answer: 
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
+            id={panelId}
+            role="region"
+            aria-labelledby={buttonId}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}

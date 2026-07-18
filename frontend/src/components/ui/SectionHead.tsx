@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Icon } from './Icon';
 
 interface SectionHeadProps {
   eyebrow: string;
@@ -20,7 +21,7 @@ export function SectionHead({ eyebrow, title, action, onEdit }: SectionHeadProps
         <div className="head-actions">
           {onEdit && (
             <button className="edit-chip" onClick={onEdit}>
-              ✎ Edit
+              <Icon name="edit" size={14} /> Edit
             </button>
           )}
           {action}

@@ -40,7 +40,7 @@ export function ContactForm() {
 
   if (status === 'sent') {
     return (
-      <div className="form-success">
+      <div className="form-success" role="status">
         Message received — thank you{form.name ? `, ${form.name.split(' ')[0]}` : ''}! I’ll get back
         to you at {form.email} shortly.
       </div>
@@ -89,7 +89,11 @@ export function ContactForm() {
         <label htmlFor="c-message">Your Message *</label>
         <textarea id="c-message" required maxLength={4000} value={form.message} onChange={set('message')} placeholder="What are you building, and when do you need it?" />
       </div>
-      {error && <div className="form-error full">{error}</div>}
+      {error && (
+        <div className="form-error full" role="alert">
+          {error}
+        </div>
+      )}
       <div className="full">
         <Pill variant="amber" type="submit" disabled={status === 'sending'}>
           {status === 'sending' ? 'Sending…' : 'Submit'}

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { api, RESUME_URL } from '../../api/client';
 import { useAdminUI } from '../../context/AdminUIContext';
 import { usePortfolio } from '../../context/PortfolioContext';
+import { Icon } from '../ui/Icon';
 import { Pill } from '../ui/Pill';
 import { SocialIcon } from '../ui/SocialIcon';
 
@@ -30,7 +31,11 @@ function Newsletter() {
   };
 
   if (status === 'done') {
-    return <p className="newsletter-done">You’re on the list — talk soon. ✓</p>;
+    return (
+      <p className="newsletter-done" role="status">
+        <Icon name="check" size={15} /> You’re on the list — talk soon.
+      </p>
+    );
   }
   return (
     <form className="newsletter" onSubmit={submit}>
@@ -43,9 +48,13 @@ function Newsletter() {
         aria-label="Email address for updates"
       />
       <button type="submit" disabled={status === 'sending'} aria-label="Subscribe">
-        {status === 'sending' ? '…' : '➤'}
+        <Icon name="send" size={16} />
       </button>
-      {status === 'error' && <span className="form-error">Try again in a minute.</span>}
+      {status === 'error' && (
+        <span className="form-error" role="alert">
+          Try again in a minute.
+        </span>
+      )}
     </form>
   );
 }

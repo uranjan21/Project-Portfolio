@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { usePortfolio } from '../../context/PortfolioContext';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { Icon } from '../ui/Icon';
 import { Pill } from '../ui/Pill';
 import { ThemeToggle } from '../ui/ThemeToggle';
 
@@ -18,7 +20,10 @@ export function Nav() {
   const { data } = usePortfolio();
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const mobileNavRef = useRef<HTMLElement>(null);
   const firstName = data?.profile.name.split(' ')[0] ?? 'Portfolio';
+
+  useFocusTrap(mobileNavRef, open);
 
   // Close the mobile menu on Escape.
   useEffect(() => {
@@ -58,12 +63,12 @@ export function Nav() {
             aria-expanded={open}
             aria-controls="mobile-nav"
           >
-            {open ? '✕' : '☰'}
+            <Icon name={open ? 'close' : 'menu'} size={20} />
           </button>
         </div>
       </div>
       {open && (
-        <nav id="mobile-nav" className="nav-mobile" key={location.pathname}>
+        <nav id="mobile-nav" className="nav-mobile" ref={mobileNavRef} key={location.pathname}>
           {NAV_ITEMS.map(([to, label]) => (
             <NavLink
               key={to}

@@ -1,5 +1,6 @@
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Reveal } from '../ui/Reveal';
+import { SocialIcon } from '../ui/SocialIcon';
 import { ContactForm } from './ContactForm';
 
 /** Dark contact section (info + full form) embedded at page bottoms, per the reference. */
@@ -24,17 +25,23 @@ export function ContactBand() {
               </p>
               <div className="contact-info">
                 <div className="info-row">
-                  <span className="icon-circle">✉️</span>
+                  <span className="icon-circle">
+                    <SocialIcon name="mail" size={20} />
+                  </span>
                   <a href={`mailto:${profile.email}`}>{profile.email}</a>
                 </div>
                 {profile.phone && (
                   <div className="info-row">
-                    <span className="icon-circle">📞</span>
+                    <span className="icon-circle">
+                      <SocialIcon name="phone" size={20} />
+                    </span>
                     <span>{profile.phone}</span>
                   </div>
                 )}
                 <div className="info-row">
-                  <span className="icon-circle">📍</span>
+                  <span className="icon-circle">
+                    <SocialIcon name="location" size={20} />
+                  </span>
                   <span>{profile.location}</span>
                 </div>
               </div>

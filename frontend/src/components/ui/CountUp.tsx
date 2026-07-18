@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { animate, useInView } from 'framer-motion';
 
 /**
- * Animates the numeric part of a stat value ("20+" counts 0→20, keeping the
+ * Animates the numeric part of a stat value ("20+" counts 0 to 20, keeping the
  * suffix). Non-numeric values render as-is.
  */
 export function CountUp({ value }: { value: string }) {

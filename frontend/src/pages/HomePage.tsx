@@ -1,4 +1,6 @@
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import type { MotionStyle } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { RESUME_URL } from '../api/client';
 import { BlogCard } from '../components/cards/BlogCard';
@@ -7,11 +9,12 @@ import { ServiceCard } from '../components/cards/ServiceCard';
 import { TestimonialCard } from '../components/cards/TestimonialCard';
 import { CtaBand } from '../components/sections/CtaBand';
 import { FaqBand } from '../components/sections/FaqBand';
-import { JourneyCards } from '../components/sections/JourneyCards';
+import { JourneyTimeline } from '../components/sections/JourneyTimeline';
 import { Marquee } from '../components/sections/Marquee';
 import { PricingBand } from '../components/sections/PricingBand';
 import { ToolsGrid } from '../components/sections/ToolsGrid';
 import { CountUp } from '../components/ui/CountUp';
+import { Icon } from '../components/ui/Icon';
 import { Pill } from '../components/ui/Pill';
 import { Reveal, Stagger, StaggerItem } from '../components/ui/Reveal';
 import { SectionHead } from '../components/ui/SectionHead';
@@ -30,9 +33,16 @@ const HERO_ITEM = {
   show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut' as const } },
 };
 
-function SpinBadge() {
+const MotionLink = motion.create(Link);
+
+/**
+ * `style` is applied to the badge itself rather than a wrapper: the badge is
+ * absolutely positioned against `.hero-visual`, and a transformed wrapper would
+ * become its containing block and move it.
+ */
+function SpinBadge({ style }: { style?: MotionStyle }) {
   return (
-    <Link to="/contact" className="spin-badge" aria-label="Hire me — go to contact page">
+    <MotionLink to="/contact" className="spin-badge" aria-label="Hire me — go to contact page" style={style}>
       <svg viewBox="0 0 100 100">
         <defs>
           <path id="badge-circle" d="M 50,50 m -34,0 a 34,34 0 1,1 68,0 a 34,34 0 1,1 -68,0" />
@@ -44,8 +54,10 @@ function SpinBadge() {
           </textPath>
         </text>
       </svg>
-      <span className="middle-arrow">↗</span>
-    </Link>
+      <span className="middle-arrow">
+        <Icon name="arrow-up-right" size={20} />
+      </span>
+    </MotionLink>
   );
 }
 
@@ -53,6 +65,20 @@ export function HomePage() {
   const { data } = usePortfolio();
   const { editFor } = useAdminUI();
   const { audience, select } = useAudience(data?.audiences ?? []);
+
+  // Scroll-linked hero depth. One scroll subscription drives three layers at
+  // different rates — transform/opacity only, so it stays on the compositor.
+  const heroRef = useRef<HTMLElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const blobY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 90]);
+  const badgeY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 170]);
+  const chipsY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 220]);
+  const heroFade = useTransform(scrollYProgress, [0, 0.85], [1, reduced ? 1 : 0.25]);
+
   usePageMeta(
     data ? `${data.profile.name} — ${data.profile.title}` : 'Portfolio',
     data?.profile.seo.metaDescription,
@@ -69,10 +95,10 @@ export function HomePage() {
   return (
     <>
       {/* ---------- Hero ---------- */}
-      <section className="container hero">
+      <section className="container hero" ref={heroRef}>
         <motion.div variants={HERO_STAGGER} initial="hidden" animate="show">
           <motion.span className="hero-badge" variants={HERO_ITEM}>
-            Hello There! 👋
+            Hello There! <Icon name="wave" size={16} />
           </motion.span>
           <motion.h1 variants={HERO_ITEM}>
             I’m <span className="accent">{profile.name}</span>,<br />
@@ -92,13 +118,14 @@ export function HomePage() {
                   key={a.id}
                   className={`audience-btn${a.id === audience?.id ? ' active' : ''}`}
                   onClick={() => select(a.id)}
+                  aria-pressed={a.id === audience?.id}
                 >
                   {a.label}
                 </button>
               ))}
               {editFor('audiences') && (
-                <button className="edit-chip" onClick={editFor('audiences')}>
-                  ✎
+                <button className="edit-chip" onClick={editFor('audiences')} aria-label="Edit audiences">
+                  <Icon name="edit" size={14} />
                 </button>
               )}
             </motion.div>
@@ -130,7 +157,7 @@ export function HomePage() {
                 )}
                 {editFor('profile') && (
                   <button className="edit-chip" onClick={editFor('profile')}>
-                    ✎ Edit profile
+                    <Icon name="edit" size={14} /> Edit profile
                   </button>
                 )}
               </div>
@@ -153,9 +180,16 @@ export function HomePage() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, ease: 'easeOut', delay: 0.15 }}
         >
-          <div className="blob">
+          <motion.div className="blob" style={{ y: blobY, opacity: heroFade }}>
             {profile.photoUrl ? (
-              <img src={profile.photoUrl} alt={profile.name} />
+              <img
+                src={profile.photoUrl}
+                alt=""
+                width={520}
+                height={520}
+                fetchPriority="high"
+                decoding="async"
+              />
             ) : (
               <span className="monogram">
                 {profile.name
@@ -164,20 +198,22 @@ export function HomePage() {
                   .join('')}
               </span>
             )}
-          </div>
-          <SpinBadge />
+          </motion.div>
+          <SpinBadge style={{ y: badgeY, opacity: heroFade }} />
           {orbitChips.map((chip, i) => (
-            <span
+            <motion.span
               key={chip}
               className={`orbit-chip${i % 2 ? ' light' : ''}`}
               style={{
                 top: `${[68, 14, 82, 38][i]}%`,
                 left: `${[4, 8, 56, 72][i]}%`,
                 animationDelay: `${i * 0.7}s`,
+                y: chipsY,
+                opacity: heroFade,
               }}
             >
               {chip}
-            </span>
+            </motion.span>
           ))}
         </motion.div>
       </section>
@@ -222,7 +258,7 @@ export function HomePage() {
               <div className="hero-visual" style={{ minHeight: 300 }}>
                 <div className="blob" style={{ width: 'min(260px, 90%)' }}>
                   {profile.photoUrl ? (
-                    <img src={profile.photoUrl} alt={profile.name} loading="lazy" decoding="async" />
+                    <img src={profile.photoUrl} alt="" width={520} height={520} loading="lazy" decoding="async" />
                   ) : (
                     <span className="monogram" style={{ fontSize: '4.5rem' }}>
                       {profile.name
@@ -359,7 +395,7 @@ export function HomePage() {
                 }
               />
             </div>
-            <JourneyCards education={data.education} experiences={data.experiences} />
+            <JourneyTimeline education={data.education} experiences={data.experiences} />
           </Reveal>
         </div>
       </section>
@@ -386,17 +422,25 @@ export function HomePage() {
                     <span className={`status-chip${venture.live ? ' live' : ''}`}>
                       {venture.live ? 'LIVE' : 'COMING SOON'}
                     </span>
-                    <div className="icon-circle">{venture.emoji}</div>
+                    <div className="icon-circle">
+                      <Icon name={venture.icon} size={24} />
+                    </div>
                     <h3>{venture.title}</h3>
                     <p className="venture-tagline">{venture.tagline}</p>
                     <p>{venture.description}</p>
                     {venture.live && venture.url ? (
                       <a className="more-link" href={venture.url} target="_blank" rel="noreferrer">
-                        Explore <span className="tick">→</span>
+                        Explore
+                        <span className="tick">
+                          <Icon name="arrow-right" size={15} />
+                        </span>
                       </a>
                     ) : (
                       <Link className="more-link" to="/coming-soon">
-                        Get notified <span className="tick">→</span>
+                        Get notified
+                        <span className="tick">
+                          <Icon name="arrow-right" size={15} />
+                        </span>
                       </Link>
                     )}
                   </div>

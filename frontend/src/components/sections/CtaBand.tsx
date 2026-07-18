@@ -16,7 +16,7 @@ export function CtaBand() {
     <section className="section">
       <div className="container">
         <Reveal>
-          <div className="cta-scatter has-photo">
+          <div className="cta-scatter">
             <h2>
               Let’s Create an <span className="accent">Amazing Project</span> Together!
             </h2>

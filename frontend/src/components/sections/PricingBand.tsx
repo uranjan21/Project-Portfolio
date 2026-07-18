@@ -1,5 +1,6 @@
 import type { PricingPlan } from '../../types/portfolio';
 import { useAdminUI } from '../../context/AdminUIContext';
+import { Icon } from '../ui/Icon';
 import { Pill } from '../ui/Pill';
 
 /**
@@ -25,7 +26,7 @@ export function PricingBand({ pricing }: { pricing: PricingPlan[] }) {
             <div className="head-actions">
               {onEdit && (
                 <button className="edit-chip" onClick={onEdit}>
-                  ✎ Edit
+                  <Icon name="edit" size={14} /> Edit
                 </button>
               )}
               <Pill to="/contact" variant="amber">
@@ -45,7 +46,10 @@ export function PricingBand({ pricing }: { pricing: PricingPlan[] }) {
                   </div>
                   <ul>
                     {plan.features.map((f, i) => (
-                      <li key={i}>{f}</li>
+                      <li key={i}>
+                        <Icon name="check" size={15} />
+                        <span>{f}</span>
+                      </li>
                     ))}
                   </ul>
                 </div>

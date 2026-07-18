@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Outlet, useLocation } from 'react-router-dom';
 import type { SectionKey } from '../../types/portfolio';
@@ -14,14 +14,23 @@ import { Nav } from './Nav';
 
 /** App shell: nav, routed page, footer, chat, and the admin dialog layer. */
 export function Layout() {
-  const { data, error, isAdmin } = usePortfolio();
+  const { data, error, isAdmin, refresh } = usePortfolio();
   const [loginOpen, setLoginOpen] = useState(false);
   const [editing, setEditing] = useState<SectionKey | null>(null);
   const location = useLocation();
+  const mainRef = useRef<HTMLElement>(null);
+  const isFirstRender = useRef(true);
 
-  // Scroll to top on route change.
+  // On route change, scroll to top *and* move focus into <main>. Without the
+  // focus move a keyboard/screen-reader user stays parked on the old page's
+  // link and gets no signal that the page changed.
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    mainRef.current?.focus();
   }, [location.pathname]);
 
   // Ctrl/Cmd+Shift+A opens admin login.
@@ -35,6 +44,16 @@ export function Layout() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
+
+  // On a fast connection the fetch resolves in well under 200ms, so showing the
+  // spinner immediately just produces a flash. Hold it back; render nothing
+  // until the wait is long enough to be worth acknowledging.
+  const [showSpinner, setShowSpinner] = useState(false);
+  useEffect(() => {
+    if (data) return;
+    const t = setTimeout(() => setShowSpinner(true), 200);
+    return () => clearTimeout(t);
+  }, [data]);
 
   const editFor = useCallback(
     (section: SectionKey) => (isAdmin ? () => setEditing(section) : undefined),
@@ -51,14 +70,18 @@ export function Layout() {
             {data?.profile.name.split(' ')[0] ?? 'Portfolio'}
             <em>.</em>
           </span>
-          <p>Couldn’t load the site — {error}</p>
+          <p role="alert">Couldn’t load the site — {error}</p>
+          <button className="btn primary" onClick={() => void refresh()}>
+            Try again
+          </button>
         </div>
       </div>
     );
   }
   if (!data) {
+    if (!showSpinner) return null;
     return (
-      <div className="loading-screen">
+      <div className="loading-screen" role="status" aria-live="polite">
         <div className="loading-brand">
           <span className="loading-spinner" aria-hidden="true" />
           <p>Loading…</p>
@@ -69,11 +92,14 @@ export function Layout() {
 
   return (
     <AdminUIContext.Provider value={adminUI}>
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
       <ScrollProgress />
       <div className="ambient a1" aria-hidden="true" />
       <div className="ambient a2" aria-hidden="true" />
       <Nav />
-      <main>
+      <main id="main-content" ref={mainRef} tabIndex={-1}>
         {/* Re-keying on pathname gives every page an entrance transition. */}
         <motion.div
           key={location.pathname}

@@ -64,8 +64,12 @@ export interface Testimonial {
 export interface Service {
   id: string;
   title: string;
-  /** Emoji shown in the service card icon circle. */
-  emoji: string;
+  /**
+   * Key into the SVG registry in components/ui/Icon.tsx. Typed as `string`
+   * because it arrives from the API unvalidated; `Icon` falls back to `chip`
+   * for anything it doesn't recognise.
+   */
+  icon: string;
   /** One-liner for cards and meta descriptions. */
   summary: string;
   /** Long-form copy for the service details page; blank line = new paragraph. */
@@ -107,7 +111,8 @@ export interface BlogPost {
 export interface Venture {
   id: string;
   title: string;
-  emoji: string;
+  /** Key into the SVG registry in components/ui/Icon.tsx. */
+  icon: string;
   tagline: string;
   description: string;
   live: boolean;
@@ -134,8 +139,6 @@ export interface Skill {
   name: string;
   category: string;
   level: number; // 0-100
-  /** Emoji shown in the tools grid tile. */
-  emoji?: string;
 }
 
 export interface Experience {

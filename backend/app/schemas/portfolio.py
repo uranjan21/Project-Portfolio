@@ -56,7 +56,7 @@ class Testimonial(BaseModel):
 class Service(BaseModel):
     id: str
     title: str
-    emoji: str = ""
+    icon: str = "chip"
     summary: str = ""
     description: str = ""
     deliverables: list[str] = []
@@ -86,7 +86,7 @@ class BlogPost(BaseModel):
 class Venture(BaseModel):
     id: str
     title: str
-    emoji: str = ""
+    icon: str = "chip"
     tagline: str = ""
     description: str = ""
     live: bool = False
@@ -110,7 +110,6 @@ class Skill(BaseModel):
     name: str
     category: str = ""
     level: int = 0
-    emoji: str | None = None
 
 
 class Experience(BaseModel):
