@@ -184,3 +184,13 @@ SECTION_KEYS = [
     "skills", "experiences", "projects", "blogPosts", "ventures",
     "education", "achievements", "faqs",
 ]
+
+
+class SectionUpdateRequest(BaseModel):
+    section: str
+    value: dict | list
+
+
+class AnswerQuestionRequest(BaseModel):
+    answer: str
+    addToFaq: bool = False

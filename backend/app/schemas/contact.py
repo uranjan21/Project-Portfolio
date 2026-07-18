@@ -3,7 +3,7 @@ from pydantic import BaseModel, EmailStr
 
 class ContactPayload(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     phone: str | None = None
     interest: str | None = None
     budget: str | None = None

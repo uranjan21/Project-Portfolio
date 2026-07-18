@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     notify_to: str = "utsavranjan.sk@gmail.com"
 
     site_url: str = "https://utsavranjan.info"
+    cors_origins: str = "http://localhost:5173,https://utsavranjan.info"
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 

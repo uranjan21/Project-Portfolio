@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Pill } from '../ui/Pill';
@@ -18,6 +18,16 @@ export function Nav() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const firstName = data?.profile.name.split(' ')[0] ?? 'Portfolio';
+
+  // Close the mobile menu on Escape.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
 
   return (
     <header className="nav">

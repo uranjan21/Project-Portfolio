@@ -125,6 +125,8 @@ export interface ContactMessage {
   message: string;
   sentAt: string; // ISO timestamp
   read: boolean;
+  status: 'new' | 'read' | 'replied' | 'converted' | 'archived';
+  clientId?: string;
 }
 
 export interface Skill {

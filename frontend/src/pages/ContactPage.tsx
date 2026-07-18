@@ -1,6 +1,7 @@
 import { ContactForm } from '../components/sections/ContactForm';
 import { PageHero } from '../components/ui/PageHero';
 import { Reveal } from '../components/ui/Reveal';
+import { SocialIcon } from '../components/ui/SocialIcon';
 import { usePortfolio } from '../context/PortfolioContext';
 import { usePageMeta } from '../hooks/usePageMeta';
 
@@ -28,24 +29,24 @@ export function ContactPage() {
                 </h2>
                 <div className="contact-info">
                   <div className="info-row">
-                    <span className="icon-circle">✉️</span>
+                    <span className="icon-circle"><SocialIcon name="mail" size={20} /></span>
                     <a href={`mailto:${profile.email}`}>{profile.email}</a>
                   </div>
                   {profile.phone && (
                     <div className="info-row">
-                      <span className="icon-circle">📞</span>
+                      <span className="icon-circle"><SocialIcon name="phone" size={20} /></span>
                       <span>{profile.phone}</span>
                     </div>
                   )}
                   <div className="info-row">
-                    <span className="icon-circle">📍</span>
+                    <span className="icon-circle"><SocialIcon name="location" size={20} /></span>
                     <span>{profile.location}</span>
                   </div>
                   {Object.entries(profile.links)
                     .filter(([, url]) => url)
                     .map(([name, url]) => (
                       <div className="info-row" key={name}>
-                        <span className="icon-circle">🔗</span>
+                        <span className="icon-circle"><SocialIcon name={name} size={20} /></span>
                         <a href={url as string} target="_blank" rel="noreferrer">
                           {name.charAt(0).toUpperCase() + name.slice(1)}
                         </a>

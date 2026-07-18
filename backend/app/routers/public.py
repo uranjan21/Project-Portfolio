@@ -1,5 +1,3 @@
-import re
-
 from fastapi import APIRouter, HTTPException, Request
 
 from app.database import get_supabase
@@ -32,8 +30,8 @@ async def contact(body: ContactPayload):
     email = body.email.strip()[:200]
     message = body.message.strip()[:4000]
 
-    if not name or not message or not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", email):
-        raise HTTPException(400, "name, a valid email, and message are required")
+    if not name or not message:
+        raise HTTPException(400, "name and message are required")
 
     db = get_supabase()
     entry = {

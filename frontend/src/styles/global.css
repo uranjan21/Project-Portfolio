@@ -5,7 +5,6 @@
 
 :root {
   --bg: #f7f5ef;
-  --bg-alt: #efece3;
   --card: #ffffff;
   --green: #35422d;
   --green-deep: #2a3524;
@@ -14,7 +13,7 @@
   --amber-deep: #d3922e;
   --amber-soft: #fbf0dc;
   --ink: #20241c;
-  --muted: #6f7468;
+  --muted: #5c6054;
   --line: #e4e0d5;
   --on-dark: #f3f1e9;
   --on-dark-muted: #b9bfae;
@@ -22,6 +21,8 @@
   --radius-sm: 12px;
   --shadow: 0 12px 32px rgba(32, 36, 28, 0.08);
   --shadow-lift: 0 18px 44px rgba(32, 36, 28, 0.14);
+  --ink-light: #454a3e;
+  --error: #b3401f;
   --sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --serif: 'Playfair Display', Georgia, serif;
 }
@@ -61,6 +62,22 @@ img {
 
 ::selection {
   background: var(--amber-soft);
+}
+
+/* Consistent keyboard focus ring across every interactive element. */
+:focus-visible {
+  outline: 2px solid var(--amber-deep);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* On dark surfaces the amber-deep ring is low-contrast — use bright amber. */
+.band :focus-visible,
+.footer :focus-visible,
+.chat-fab:focus-visible,
+.chat-panel :focus-visible,
+.marquee :focus-visible {
+  outline-color: var(--amber);
 }
 
 .container {
@@ -685,13 +702,13 @@ img {
 
 .grid-3 {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.4rem;
 }
 
 .grid-2 {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 1.4rem;
 }
 
@@ -814,6 +831,7 @@ img {
 }
 
 .blog-cover {
+  position: relative;
   height: 170px;
   background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%);
   display: flex;
@@ -915,7 +933,7 @@ img {
 /* Tool tile */
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 1.2rem;
 }
 
@@ -1015,7 +1033,6 @@ img {
   margin: 1rem 0;
 }
 
-.band .muted,
 .band p {
   color: var(--on-dark-muted);
 }
@@ -1447,10 +1464,6 @@ img {
 }
 
 /* Blog cover overlay chips */
-.blog-cover {
-  position: relative;
-}
-
 .cover-chips {
   position: absolute;
   left: 0.9rem;
@@ -1484,7 +1497,7 @@ img {
 
 .prose p {
   margin-bottom: 1.1rem;
-  color: #454a3e;
+  color: var(--ink-light);
 }
 
 .prose h2 {
@@ -1495,32 +1508,11 @@ img {
 
 .prose ul {
   margin: 0 0 1.1rem 1.3rem;
-  color: #454a3e;
+  color: var(--ink-light);
 }
 
 .prose li {
   margin-bottom: 0.35rem;
-}
-
-.check-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin: 0.6rem 0 1.2rem;
-}
-
-.check-list li {
-  display: flex;
-  gap: 0.6rem;
-  align-items: baseline;
-  color: #454a3e;
-}
-
-.check-list li::before {
-  content: '✓';
-  color: var(--amber-deep);
-  font-weight: 800;
 }
 
 /* ---------- Filters ---------- */
@@ -1758,7 +1750,7 @@ img {
 }
 
 .form-error {
-  color: #b3401f;
+  color: var(--error);
   font-size: 0.88rem;
   font-weight: 600;
 }
@@ -1769,19 +1761,6 @@ img {
   padding: 1.1rem 1.3rem;
   font-weight: 600;
   color: var(--green-deep);
-}
-
-.contact-layout {
-  display: grid;
-  grid-template-columns: minmax(240px, 0.8fr) 1.2fr;
-  gap: 3rem;
-}
-
-@media (max-width: 780px) {
-  .contact-layout {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
 }
 
 .contact-info {
@@ -1804,6 +1783,7 @@ img {
   font-size: 1.1rem;
   margin: 0;
   background: var(--amber);
+  color: var(--green-deep);
 }
 
 /* ---------- Dialogs (admin) ---------- */
@@ -1899,7 +1879,7 @@ img {
 }
 
 .dialog .error {
-  color: #b3401f;
+  color: var(--error);
   font-size: 0.85rem;
   font-weight: 600;
   margin-top: 0.8rem;
@@ -1954,8 +1934,8 @@ img {
 }
 
 .item-list .item-row .mini.danger:hover {
-  color: #b3401f;
-  border-color: #b3401f;
+  color: var(--error);
+  border-color: var(--error);
 }
 
 /* ---------- Admin UI ---------- */
@@ -2015,6 +1995,57 @@ img {
   margin-left: 0.3rem;
 }
 
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 1.1rem;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn:hover {
+  border-color: var(--amber);
+  background: var(--amber-soft);
+}
+
+.btn.primary {
+  background: var(--green);
+  color: var(--on-dark);
+  border-color: var(--green);
+}
+
+.btn.primary:hover {
+  background: var(--green-deep);
+  border-color: var(--green-deep);
+}
+
+.btn.magenta {
+  background: var(--amber);
+  color: var(--green-deep);
+  border-color: var(--amber);
+}
+
+.btn.magenta:hover {
+  background: var(--amber-deep);
+  border-color: var(--amber-deep);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .inbox-item {
   background: var(--card);
   border: 1px solid var(--line);
@@ -2036,7 +2067,7 @@ img {
 
 .inbox-item .msg-body {
   margin-top: 0.6rem;
-  color: #454a3e;
+  color: var(--ink-light);
   font-size: 0.9rem;
   white-space: pre-wrap;
 }
@@ -2173,7 +2204,7 @@ img {
   align-self: flex-start;
   background: var(--card);
   border: 1px solid var(--line);
-  color: #454a3e;
+  color: var(--ink-light);
   border-bottom-left-radius: 4px;
 }
 
@@ -2271,6 +2302,7 @@ img {
   height: 38px;
   border-radius: 50%;
   background: var(--amber);
+  color: var(--green-deep);
   display: inline-flex;
   align-items: center;
   justify-content: center;

@@ -221,7 +221,7 @@ export function HomePage() {
               <div className="hero-visual" style={{ minHeight: 300 }}>
                 <div className="blob" style={{ width: 'min(260px, 90%)' }}>
                   {profile.photoUrl ? (
-                    <img src={profile.photoUrl} alt={profile.name} />
+                    <img src={profile.photoUrl} alt={profile.name} loading="lazy" decoding="async" />
                   ) : (
                     <span className="monogram" style={{ fontSize: '4.5rem' }}>
                       {profile.name

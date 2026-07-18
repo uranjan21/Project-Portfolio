@@ -1,25 +1,22 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.dependencies import get_current_admin
-from app.schemas.portfolio import SECTION_KEYS
+from app.schemas.portfolio import SECTION_KEYS, SectionUpdateRequest
 from app.services.portfolio import update_section
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 
 @router.put("/portfolio")
-def update_portfolio(body: dict, _admin=Depends(get_current_admin)):
-    section = body.get("section")
-    value = body.get("value")
+def update_portfolio(body: SectionUpdateRequest, _admin=Depends(get_current_admin)):
+    if body.section not in SECTION_KEYS:
+        raise HTTPException(400, f'Unknown section "{body.section}"')
 
-    if section not in SECTION_KEYS:
-        raise HTTPException(400, f'Unknown section "{section}"')
-
-    if section == "profile":
-        if not isinstance(value, dict):
-            raise HTTPException(400, f'Invalid value shape for section "{section}"')
+    if body.section == "profile":
+        if not isinstance(body.value, dict):
+            raise HTTPException(400, f'Invalid value shape for section "{body.section}"')
     else:
-        if not isinstance(value, list):
-            raise HTTPException(400, f'Invalid value shape for section "{section}"')
+        if not isinstance(body.value, list):
+            raise HTTPException(400, f'Invalid value shape for section "{body.section}"')
 
-    return update_section(section, value)
+    return update_section(body.section, body.value)

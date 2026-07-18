@@ -5,13 +5,7 @@ import { api, RESUME_URL } from '../../api/client';
 import { useAdminUI } from '../../context/AdminUIContext';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Pill } from '../ui/Pill';
-
-const SOCIAL_ICONS: Record<string, string> = {
-  github: '🐙',
-  linkedin: '💼',
-  twitter: '𝕏',
-  website: '🌐',
-};
+import { SocialIcon } from '../ui/SocialIcon';
 
 function Newsletter() {
   const [email, setEmail] = useState('');
@@ -85,11 +79,11 @@ export function Footer() {
             <div className="social-row">
               {links.map(([name, url]) => (
                 <a key={name} href={url} target="_blank" rel="noreferrer" aria-label={name} title={name}>
-                  {SOCIAL_ICONS[name] ?? '🔗'}
+                  <SocialIcon name={name} />
                 </a>
               ))}
               <a href={`mailto:${profile.email}`} aria-label="Email" title="Email">
-                ✉️
+                <SocialIcon name="mail" />
               </a>
             </div>
           </div>

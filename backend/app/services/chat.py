@@ -45,8 +45,7 @@ def _match_faq(message: str) -> dict | None:
     return best if best and best_score >= 0.6 else None
 
 
-def _build_context() -> str:
-    data = get_portfolio()
+def _build_context(data) -> str:
     p = data.profile
     lines = [
         f"Name: {p.name}",
@@ -111,17 +110,16 @@ def _build_context() -> str:
 UNKNOWN_SENTINEL = "UNKNOWN"
 
 
-async def _ask_ai(message: str) -> str | None:
+async def _ask_ai(message: str, data) -> str | None:
     if not settings.openai_api_key:
         return None
 
-    data = get_portfolio()
     system_prompt = (
         f"You are {data.profile.name}, speaking in first person on your own portfolio website. "
         f"Answer the visitor's question in a friendly, concise way (2-4 sentences) using ONLY the "
         f"portfolio content below. Never invent facts. If the answer is not clearly contained in "
         f'the content, reply with exactly "{UNKNOWN_SENTINEL}" and nothing else.\n\n'
-        f"--- PORTFOLIO CONTENT ---\n{_build_context()}"
+        f"--- PORTFOLIO CONTENT ---\n{_build_context(data)}"
     )
 
     async with httpx.AsyncClient() as client:
@@ -156,7 +154,9 @@ async def answer_question(message: str) -> dict:
     if faq:
         return {"reply": faq["answer"], "source": "faq"}
 
-    ai_reply = await _ask_ai(message)
+    data = get_portfolio()
+
+    ai_reply = await _ask_ai(message, data)
     if ai_reply:
         return {"reply": ai_reply, "source": "ai"}
 
@@ -169,7 +169,6 @@ async def answer_question(message: str) -> dict:
         "Answer it from the admin inbox on your portfolio to add it to the FAQ.",
     )
 
-    data = get_portfolio()
     first_name = data.profile.name.split(" ")[0]
     return {
         "reply": (

@@ -20,7 +20,7 @@ Personal portfolio and professional presence for Utsav Ranjan. Warm professional
 
 | Command | What it does |
 |---|---|
-| `npm run dev` | Vite dev server on :5173; proxies `/api` to FastAPI on :8000 |
+| `npm run dev` | Vite dev server on :5173; proxies `/api` to FastAPI on :8001 |
 | `npm run build` | Typechecks then builds to `dist/` |
 | `npm run typecheck` | `tsc --noEmit` |
 
@@ -29,7 +29,7 @@ Personal portfolio and professional presence for Utsav Ranjan. Warm professional
 | Command | What it does |
 |---|---|
 | `source venv/bin/activate` | Activate Python virtualenv |
-| `uvicorn app.main:app --reload` | FastAPI dev server on :8000 |
+| `uvicorn app.main:app --reload --port 8001` | FastAPI dev server on :8001 |
 | `pip install -r requirements.txt` | Install Python dependencies |
 
 There is no test suite yet. Verify changes with frontend `npm run build` + manual/curl checks against the API.
@@ -48,7 +48,7 @@ frontend/                  React 18 + Vite + TypeScript client
     hooks/                 usePageMeta, useAudience
     styles/global.css      Design system — CSS variables on :root, class-based
   index.html               SPA entry point
-  vite.config.ts           Proxy /api → localhost:8000
+  vite.config.ts           Proxy /api → localhost:8001
 
 backend/                   Python FastAPI + Supabase
   app/
@@ -83,7 +83,7 @@ backend/                   Python FastAPI + Supabase
 Supabase project: `utsavranjan-info` (ap-south-1)
 Project ID: `djqlpkmvugxkdhfxwviv`
 
-16 PostgreSQL tables: profile, stats, audiences, services, pricing_plans, skills, experiences, education, achievements, ventures, faqs, blog_posts, clients, projects, testimonials, contact_messages, contact_follow_ups, unanswered_questions.
+18 PostgreSQL tables: profile, stats, audiences, services, pricing_plans, skills, experiences, education, achievements, ventures, faqs, blog_posts, clients, projects, testimonials, contact_messages, contact_follow_ups, unanswered_questions.
 
 ## Key flows
 

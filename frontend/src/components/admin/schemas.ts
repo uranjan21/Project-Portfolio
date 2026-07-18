@@ -157,6 +157,7 @@ export const SECTION_SCHEMAS: Record<SectionKey, SectionSchema> = {
     labelKey: 'name',
     fields: [
       { key: 'name', label: 'Skill name', type: 'text' },
+      { key: 'emoji', label: 'Emoji', type: 'text', hint: 'Single emoji icon for this skill' },
       { key: 'category', label: 'Category', type: 'text', hint: 'e.g. Frontend, Backend, Data, Infrastructure' },
       { key: 'level', label: 'Level (0-100)', type: 'number' },
     ],
@@ -186,6 +187,7 @@ export const SECTION_SCHEMAS: Record<SectionKey, SectionSchema> = {
       { key: 'title', label: 'Title', type: 'text' },
       { key: 'tag', label: 'Tag', type: 'text', hint: 'e.g. Web App, AI Tool' },
       { key: 'description', label: 'Description', type: 'textarea' },
+      { key: 'details', label: 'Details (Markdown)', type: 'textarea', hint: 'Long-form case study. "## " = heading, "- " = bullet' },
       { key: 'tech', label: 'Tech', type: 'tags', hint: 'Comma-separated' },
       { key: 'liveUrl', label: 'Live demo URL', type: 'text' },
       { key: 'repoUrl', label: 'Repository URL', type: 'text' },
