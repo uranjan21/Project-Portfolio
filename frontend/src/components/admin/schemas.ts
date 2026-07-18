@@ -186,6 +186,7 @@ export const SECTION_SCHEMAS: Record<SectionKey, SectionSchema> = {
     fields: [
       { key: 'title', label: 'Title', type: 'text' },
       { key: 'tag', label: 'Tag', type: 'text', hint: 'e.g. Web App, AI Tool' },
+      { key: 'coverUrl', label: 'Cover image URL', type: 'text', hint: 'Optional — screenshot shown on cards & detail page' },
       { key: 'description', label: 'Description', type: 'textarea' },
       { key: 'details', label: 'Details (Markdown)', type: 'textarea', hint: 'Long-form case study. "## " = heading, "- " = bullet' },
       { key: 'tech', label: 'Tech', type: 'tags', hint: 'Comma-separated' },

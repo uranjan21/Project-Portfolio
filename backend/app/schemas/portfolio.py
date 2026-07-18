@@ -132,6 +132,7 @@ class Project(BaseModel):
     tech: list[str] = []
     liveUrl: str | None = None
     repoUrl: str | None = None
+    coverUrl: str | None = None
 
 
 class Education(BaseModel):

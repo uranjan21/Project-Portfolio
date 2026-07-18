@@ -60,6 +60,21 @@ export function AboutPage() {
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
+            <figure className="about-banner">
+              <img
+                src="/images/candid-beige.jpg"
+                alt={profile.name}
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <Reveal>
             <div className="center">
               <SectionHead
                 eyebrow="Education & Work"

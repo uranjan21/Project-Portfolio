@@ -44,10 +44,27 @@ export function Layout() {
   const adminUI = useMemo(() => ({ editFor, openLogin }), [editFor, openLogin]);
 
   if (error) {
-    return <div className="loading-screen">Couldn’t load the site — {error}</div>;
+    return (
+      <div className="loading-screen">
+        <div className="loading-brand">
+          <span className="loading-logo">
+            {data?.profile.name.split(' ')[0] ?? 'Portfolio'}
+            <em>.</em>
+          </span>
+          <p>Couldn’t load the site — {error}</p>
+        </div>
+      </div>
+    );
   }
   if (!data) {
-    return <div className="loading-screen">Loading…</div>;
+    return (
+      <div className="loading-screen">
+        <div className="loading-brand">
+          <span className="loading-spinner" aria-hidden="true" />
+          <p>Loading…</p>
+        </div>
+      </div>
+    );
   }
 
   return (

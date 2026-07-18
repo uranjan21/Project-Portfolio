@@ -11,6 +11,14 @@ interface Message {
 
 let nextId = 1;
 
+const ASSISTANT_AVATAR = '/images/caricature.png';
+
+const STARTERS = [
+  'What’s your experience?',
+  'Are you available for freelance work?',
+  'What technologies do you work with?',
+];
+
 /** Floating HUD chat console that answers questions about the portfolio owner. */
 export function ChatWidget() {
   const { data } = usePortfolio();
@@ -37,8 +45,8 @@ export function ChatWidget() {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, busy]);
 
-  const send = async () => {
-    const text = input.trim();
+  const sendText = async (raw: string) => {
+    const text = raw.trim();
     if (!text || busy) return;
     setInput('');
     setMessages((m) => [...m, { id: nextId++, from: 'user', text }]);
@@ -60,6 +68,11 @@ export function ChatWidget() {
     }
   };
 
+  const send = () => sendText(input);
+
+  // Suggested prompts shown until the visitor asks their first question.
+  const showStarters = !busy && !messages.some((m) => m.from === 'user');
+
   return (
     <>
       <AnimatePresence>
@@ -76,11 +89,28 @@ export function ChatWidget() {
             </div>
             <div className="chat-log" ref={logRef}>
               {messages.map((msg) => (
-                <div key={msg.id} className={`chat-msg ${msg.from}`}>
-                  {msg.text}
+                <div key={msg.id} className={`chat-row ${msg.from}`}>
+                  {msg.from === 'bot' && (
+                    <img className="chat-avatar" src={ASSISTANT_AVATAR} alt="" decoding="async" />
+                  )}
+                  <div className={`chat-msg ${msg.from}`}>{msg.text}</div>
                 </div>
               ))}
-              {busy && <div className="chat-msg bot typing">…</div>}
+              {busy && (
+                <div className="chat-row bot">
+                  <img className="chat-avatar" src={ASSISTANT_AVATAR} alt="" decoding="async" />
+                  <div className="chat-msg bot typing">…</div>
+                </div>
+              )}
+              {showStarters && messages.length > 0 && (
+                <div className="chat-starters">
+                  {STARTERS.map((q) => (
+                    <button key={q} className="chat-starter" onClick={() => void sendText(q)}>
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="chat-input-row">
               <input

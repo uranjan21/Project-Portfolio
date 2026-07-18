@@ -2,10 +2,7 @@ import { usePortfolio } from '../../context/PortfolioContext';
 import { Pill } from '../ui/Pill';
 import { Reveal } from '../ui/Reveal';
 
-// Deterministic pseudo-random scatter per index (rotation, drift delay).
-const ROTATIONS = [-8, 5, -4, 9, -11, 3, 7, -6, 10, -3, 6, -9];
-
-/** Centered CTA with scattered tag "confetti", per the reference design. */
+/** Centered CTA with a tidy cluster of service/skill tags underneath. */
 export function CtaBand() {
   const { data } = usePortfolio();
   if (!data) return null;
@@ -19,7 +16,7 @@ export function CtaBand() {
     <section className="section">
       <div className="container">
         <Reveal>
-          <div className="cta-scatter">
+          <div className="cta-scatter has-photo">
             <h2>
               Let’s Create an <span className="accent">Amazing Project</span> Together!
             </h2>
@@ -30,14 +27,7 @@ export function CtaBand() {
             </div>
             <div className="tag-confetti" aria-hidden="true">
               {tags.map((tag, i) => (
-                <span
-                  key={tag}
-                  className={i % 2 ? 'confetti amber' : 'confetti'}
-                  style={{
-                    transform: `rotate(${ROTATIONS[i % ROTATIONS.length]}deg)`,
-                    animationDelay: `${(i % 6) * 0.5}s`,
-                  }}
-                >
+                <span key={tag} className={i % 2 ? 'confetti amber' : 'confetti'}>
                   {tag}
                 </span>
               ))}

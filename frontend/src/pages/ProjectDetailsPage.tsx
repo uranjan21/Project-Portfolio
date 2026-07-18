@@ -28,6 +28,13 @@ export function ProjectDetailsPage() {
         sub={project.description}
         onEdit={editFor('projects')}
       />
+      {project.coverUrl && (
+        <div className="container">
+          <div className="project-detail-cover">
+            <img src={project.coverUrl} alt={project.title} decoding="async" />
+          </div>
+        </div>
+      )}
       <section className="section" style={{ paddingTop: '2.4rem' }}>
         <div className="container detail-layout">
           <div className="prose">

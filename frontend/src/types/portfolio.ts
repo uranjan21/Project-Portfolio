@@ -158,6 +158,8 @@ export interface Project {
   tech: string[];
   liveUrl?: string;
   repoUrl?: string;
+  /** Optional cover image; a green gradient + title is shown when unset. */
+  coverUrl?: string;
 }
 
 export interface Education {

@@ -5,7 +5,11 @@ export function ProjectCard({ project }: { project: Project }) {
   return (
     <div className="card project-card">
       <Link to={`/projects/${project.id}`} className="project-cover">
-        <span className="cover-title">{project.title}</span>
+        {project.coverUrl ? (
+          <img src={project.coverUrl} alt={project.title} loading="lazy" decoding="async" />
+        ) : (
+          <span className="cover-title">{project.title}</span>
+        )}
       </Link>
       <div className="project-body">
         <div className="tag-chips">

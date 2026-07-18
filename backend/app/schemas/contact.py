@@ -44,6 +44,7 @@ class ProjectCreate(BaseModel):
     tech: list[str] = []
     live_url: str | None = None
     repo_url: str | None = None
+    cover_url: str | None = None
     status: str = "received"
     client_id: int | None = None
     budget: str | None = None
@@ -61,6 +62,7 @@ class ProjectUpdate(BaseModel):
     tech: list[str] | None = None
     live_url: str | None = None
     repo_url: str | None = None
+    cover_url: str | None = None
     status: str | None = None
     client_id: int | None = None
     budget: str | None = None

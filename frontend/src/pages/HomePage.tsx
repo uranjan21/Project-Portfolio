@@ -56,6 +56,7 @@ export function HomePage() {
   usePageMeta(
     data ? `${data.profile.name} — ${data.profile.title}` : 'Portfolio',
     data?.profile.seo.metaDescription,
+    data?.profile.seo.ogImage,
   );
   if (!data) return null;
 

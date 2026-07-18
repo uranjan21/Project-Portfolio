@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { Pill } from '../ui/Pill';
+import { ThemeToggle } from '../ui/ThemeToggle';
 
 const NAV_ITEMS = [
   ['/', 'Home'],
@@ -45,15 +46,24 @@ export function Nav() {
             </li>
           ))}
         </ul>
-        <Pill to="/contact" variant="dark" small>
-          Contact Me
-        </Pill>
-        <button className="nav-burger" onClick={() => setOpen((o) => !o)} aria-label="Toggle menu">
-          {open ? '✕' : '☰'}
-        </button>
+        <div className="nav-end">
+          <ThemeToggle />
+          <Pill to="/contact" variant="dark" small>
+            Contact Me
+          </Pill>
+          <button
+            className="nav-burger"
+            onClick={() => setOpen((o) => !o)}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+          >
+            {open ? '✕' : '☰'}
+          </button>
+        </div>
       </div>
       {open && (
-        <nav className="nav-mobile" key={location.pathname}>
+        <nav id="mobile-nav" className="nav-mobile" key={location.pathname}>
           {NAV_ITEMS.map(([to, label]) => (
             <NavLink
               key={to}

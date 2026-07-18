@@ -2,6 +2,7 @@ import { MotionConfig } from 'framer-motion';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { PortfolioProvider } from './context/PortfolioContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { AboutPage } from './pages/AboutPage';
 import { BlogPage } from './pages/BlogPage';
 import { BlogPostPage } from './pages/BlogPostPage';
@@ -18,6 +19,7 @@ import { TestimonialsPage } from './pages/TestimonialsPage';
 
 export default function App() {
   return (
+    <ThemeProvider>
     <PortfolioProvider>
       <MotionConfig reducedMotion="user">
         <BrowserRouter>
@@ -41,5 +43,6 @@ export default function App() {
         </BrowserRouter>
       </MotionConfig>
     </PortfolioProvider>
+    </ThemeProvider>
   );
 }

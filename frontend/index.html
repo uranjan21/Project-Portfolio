@@ -10,15 +10,24 @@
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=Playfair+Display:ital,wght@1,500;1,600&display=swap"
       rel="stylesheet"
     />
-    <!-- seo:start -->
-    <!-- In production the server replaces this whole block with tags rendered
-         from live portfolio content (server/seo.ts). These are dev fallbacks. -->
+    <!-- Apply stored theme before CSS renders to prevent flash of wrong colour scheme. -->
+    <script>try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+    <!-- Default meta; per-route values are set at runtime by usePageMeta and
+         baked into static HTML at build time by the prerender step. -->
     <title>Utsav Ranjan — Full Stack Developer & Software Engineer</title>
     <meta
       name="description"
       content="Utsav Ranjan is a full-stack software engineer and freelance developer specialising in React, TypeScript, Node.js, Python and AI tools."
     />
-    <!-- seo:end -->
+    <link rel="canonical" href="https://utsavranjan.info/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Utsav Ranjan" />
+    <meta property="og:title" content="Utsav Ranjan — Full Stack Developer & Software Engineer" />
+    <meta property="og:description" content="Full-stack software engineer and freelance developer specialising in React, TypeScript, Node.js, Python and AI tools." />
+    <meta property="og:url" content="https://utsavranjan.info/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Utsav Ranjan — Full Stack Developer & Software Engineer" />
+    <meta name="twitter:description" content="Full-stack software engineer and freelance developer specialising in React, TypeScript, Node.js, Python and AI tools." />
   </head>
   <body>
     <div id="root"></div>

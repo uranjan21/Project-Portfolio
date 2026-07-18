@@ -190,6 +190,7 @@ def _build_projects(db) -> list[Project]:
             tech=r.get("tech", []),
             liveUrl=r.get("live_url"),
             repoUrl=r.get("repo_url"),
+            coverUrl=r.get("cover_url"),
         )
         for r in rows
     ]
@@ -334,7 +335,7 @@ _SECTION_COLUMN_MAPS: dict[str, dict[str, str]] = {
     "testimonials": {},
     "skills": {},
     "experiences": {},
-    "projects": {"liveUrl": "live_url", "repoUrl": "repo_url"},
+    "projects": {"liveUrl": "live_url", "repoUrl": "repo_url", "coverUrl": "cover_url"},
     "blogPosts": {"coverUrl": "cover_url"},
     "ventures": {},
     "education": {},
