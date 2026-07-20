@@ -1,7 +1,7 @@
 import { ResumeDownload } from '../components/ui/ResumeDownload';
 import { CtaBand } from '../components/sections/CtaBand';
 import { JourneyTimeline } from '../components/sections/JourneyTimeline';
-import { ToolsGrid } from '../components/sections/ToolsGrid';
+import { SkillsIndex } from '../components/sections/SkillsIndex';
 import { CountUp } from '../components/ui/CountUp';
 import { PageHero } from '../components/ui/PageHero';
 import { Pill } from '../components/ui/Pill';
@@ -105,8 +105,9 @@ export function AboutPage() {
                 onEdit={editFor('skills')}
               />
             </div>
-            <ToolsGrid skills={focusSkills(data.skills, audience)} />
           </Reveal>
+          {/* Outside Reveal: a transformed ancestor would break the sticky rail. */}
+          <SkillsIndex skills={focusSkills(data.skills, audience)} projects={data.projects} />
         </div>
       </section>
 

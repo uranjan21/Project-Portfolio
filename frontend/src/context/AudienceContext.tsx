@@ -10,6 +10,8 @@ interface AudienceContextValue {
   audiences: AudiencePitch[];
   /** The active pitch — an explicit choice, or the first configured one. */
   audience: AudiencePitch | undefined;
+  /** True once the visitor has explicitly picked an audience (via dialog, switcher, or ?for= link). */
+  hasChosen: boolean;
   /** Whether the "who's visiting?" dialog should be showing. */
   dialogOpen: boolean;
   /** Reopen the dialog later (e.g. the footer's "Viewing as" control). */
@@ -62,9 +64,11 @@ export function AudienceProvider({ children }: { children: ReactNode }) {
     audiences.length > 0 && !dismissed && !audiences.some((a) => a.id === selectedId);
   const dialogOpen = manualOpen || needsChoice;
 
+  const hasChosen = selectedId !== null || dismissed;
+
   const value = useMemo(
-    () => ({ audiences, audience, dialogOpen, openDialog, select, dismiss }),
-    [audiences, audience, dialogOpen, openDialog, select, dismiss],
+    () => ({ audiences, audience, hasChosen, dialogOpen, openDialog, select, dismiss }),
+    [audiences, audience, hasChosen, dialogOpen, openDialog, select, dismiss],
   );
 
   return <AudienceContext.Provider value={value}>{children}</AudienceContext.Provider>;
@@ -77,41 +81,43 @@ export function useAudience(): AudienceContextValue {
 }
 
 /**
- * Case-insensitive test: does any focus tag appear in any of the haystacks?
+ * Case-insensitive test: does one focus tag appear in any of the haystacks?
  * Short tags ("AI") must match a whole token, otherwise "AI" would hit
  * "Tailwind" and "FastAPI"; longer tags also match as substrings so
  * "Enterprise" hits "Enterprise · UX".
  */
-function matchesFocus(focusTags: string[], haystacks: string[]): boolean {
+function tagMatches(tag: string, haystacks: string[]): boolean {
+  const t = tag.trim().toLowerCase();
+  if (!t) return false;
   const tokens = haystacks.flatMap((h) => h.toLowerCase().split(/[^a-z0-9+#.]+/)).filter(Boolean);
-  const text = haystacks.join(' ').toLowerCase();
-  return focusTags.some((t) => {
-    const tag = t.trim().toLowerCase();
-    if (!tag) return false;
-    return tokens.includes(tag) || (tag.length > 3 && text.includes(tag));
-  });
+  if (tokens.includes(t)) return true;
+  return t.length > 3 && haystacks.join(' ').toLowerCase().includes(t);
 }
 
-/** Stable reorder: projects matching the audience's focus tags come first. */
+/**
+ * Stable rank: items with MORE matching focus tags come first (not a binary
+ * hit/miss split — with broad tags everything matches at least one, and the
+ * ordering wouldn't differentiate between audiences). Ties keep admin order.
+ */
+function rankByFocus<T>(items: T[], tags: string[], haystacks: (item: T) => string[]): T[] {
+  if (tags.length === 0) return items;
+  return items
+    .map((item, i) => ({ item, i, score: tags.filter((t) => tagMatches(t, haystacks(item))).length }))
+    .sort((a, b) => b.score - a.score || a.i - b.i)
+    .map((x) => x.item);
+}
+
+/** Projects most relevant to the audience's focus tags come first. */
 export function focusProjects(projects: Project[], audience?: AudiencePitch): Project[] {
-  const tags = audience?.focusTags ?? [];
-  if (tags.length === 0) return projects;
-  const hit = (p: Project) => matchesFocus(tags, [p.tag, ...p.tech]);
-  return [...projects.filter(hit), ...projects.filter((p) => !hit(p))];
+  return rankByFocus(projects, audience?.focusTags ?? [], (p) => [p.tag, ...p.tech]);
 }
 
-/** Stable reorder: services matching the audience's focus tags come first. */
+/** Services most relevant to the audience's focus tags come first. */
 export function focusServices(services: Service[], audience?: AudiencePitch): Service[] {
-  const tags = audience?.focusTags ?? [];
-  if (tags.length === 0) return services;
-  const hit = (s: Service) => matchesFocus(tags, [s.title, ...s.tech]);
-  return [...services.filter(hit), ...services.filter((s) => !hit(s))];
+  return rankByFocus(services, audience?.focusTags ?? [], (s) => [s.title, ...s.tech]);
 }
 
-/** Stable reorder: skills matching the audience's focus tags come first. */
+/** Skills most relevant to the audience's focus tags come first. */
 export function focusSkills(skills: Skill[], audience?: AudiencePitch): Skill[] {
-  const tags = audience?.focusTags ?? [];
-  if (tags.length === 0) return skills;
-  const hit = (s: Skill) => matchesFocus(tags, [s.name, s.category]);
-  return [...skills.filter(hit), ...skills.filter((s) => !hit(s))];
+  return rankByFocus(skills, audience?.focusTags ?? [], (s) => [s.name, s.category]);
 }

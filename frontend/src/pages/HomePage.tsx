@@ -4,15 +4,15 @@ import type { MotionStyle } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { RESUME_URL } from '../api/client';
 import { BlogCard } from '../components/cards/BlogCard';
-import { ProjectCard } from '../components/cards/ProjectCard';
 import { ServiceCard } from '../components/cards/ServiceCard';
-import { TestimonialCard } from '../components/cards/TestimonialCard';
 import { CtaBand } from '../components/sections/CtaBand';
 import { FaqBand } from '../components/sections/FaqBand';
 import { JourneyTimeline } from '../components/sections/JourneyTimeline';
 import { Marquee } from '../components/sections/Marquee';
 import { PricingBand } from '../components/sections/PricingBand';
-import { ToolsGrid } from '../components/sections/ToolsGrid';
+import { ProjectShowcase } from '../components/sections/ProjectShowcase';
+import { SkillsIndex } from '../components/sections/SkillsIndex';
+import { TestimonialSpotlight } from '../components/sections/TestimonialSpotlight';
 import { CountUp } from '../components/ui/CountUp';
 import { Icon } from '../components/ui/Icon';
 import { Pill } from '../components/ui/Pill';
@@ -65,7 +65,7 @@ function SpinBadge({ style }: { style?: MotionStyle }) {
 export function HomePage() {
   const { data } = usePortfolio();
   const { editFor } = useAdminUI();
-  const { audience, select } = useAudience();
+  const { audience, hasChosen, select } = useAudience();
 
   // Scroll-linked hero depth. One scroll subscription drives three layers at
   // different rates — transform/opacity only, so it stays on the compositor.
@@ -107,7 +107,7 @@ export function HomePage() {
             {profile.title} based in {profile.location.split('·')[0].trim()}.
           </motion.h1>
 
-          {data.audiences.length > 0 && (
+          {data.audiences.length > 0 && !hasChosen && (
             <motion.div
               className="audience-switcher"
               role="group"
@@ -343,8 +343,9 @@ export function HomePage() {
                 onEdit={editFor('skills')}
               />
             </div>
-            <ToolsGrid skills={skills} />
           </Reveal>
+          {/* Outside Reveal: a transformed ancestor would break the sticky rail. */}
+          <SkillsIndex skills={skills} projects={data.projects} />
         </div>
       </section>
 
@@ -367,13 +368,7 @@ export function HomePage() {
               onEdit={editFor('projects')}
             />
           </Reveal>
-          <Stagger className="grid-2">
-            {focusProjects(data.projects, audience).slice(0, 2).map((project) => (
-              <StaggerItem key={project.id}>
-                <ProjectCard project={project} />
-              </StaggerItem>
-            ))}
-          </Stagger>
+          <ProjectShowcase projects={focusProjects(data.projects, audience).slice(0, 3)} />
         </div>
       </section>
 
@@ -478,13 +473,9 @@ export function HomePage() {
                 see this section until you do.
               </div>
             ) : (
-              <Stagger className="grid-3">
-                {data.testimonials.slice(0, 3).map((t) => (
-                  <StaggerItem key={t.id}>
-                    <TestimonialCard testimonial={t} />
-                  </StaggerItem>
-                ))}
-              </Stagger>
+              <Reveal>
+                <TestimonialSpotlight testimonials={data.testimonials.slice(0, 5)} />
+              </Reveal>
             )}
           </div>
         </section>

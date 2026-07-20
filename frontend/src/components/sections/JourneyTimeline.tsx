@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+import { motion, useReducedMotion, useScroll } from 'framer-motion';
 import type { Education, Experience } from '../../types/portfolio';
 import { useAdminUI } from '../../context/AdminUIContext';
 import { Icon } from '../ui/Icon';
@@ -44,6 +46,12 @@ export function JourneyTimeline({ education, experiences, detailed }: JourneyTim
   const { editFor } = useAdminUI();
   const editEducation = editFor('education');
   const editExperiences = editFor('experiences');
+  const reduced = useReducedMotion();
+  const listRef = useRef<HTMLOListElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: listRef,
+    offset: ['start 0.8', 'end 0.5'],
+  });
 
   const entries: JourneyEntry[] = [
     ...experiences.map((exp) => ({
@@ -84,9 +92,20 @@ export function JourneyTimeline({ education, experiences, detailed }: JourneyTim
           )}
         </div>
       )}
-      <ol className="timeline">
+      <ol className="timeline" ref={listRef}>
+        {/* Amber ink draws down the spine as the timeline scrolls into view */}
+        {!reduced && (
+          <motion.span className="timeline-ink" aria-hidden="true" style={{ scaleY: scrollYProgress }} />
+        )}
         {entries.map((entry) => (
-          <li className="timeline-item" key={entry.id}>
+          <motion.li
+            className="timeline-item"
+            key={entry.id}
+            initial={reduced ? false : { opacity: 0, x: 14 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+          >
             <span className="timeline-dot" aria-hidden="true">
               <Icon name={entry.kind === 'work' ? 'briefcase' : 'graduation-cap'} size={15} />
             </span>
@@ -106,7 +125,7 @@ export function JourneyTimeline({ education, experiences, detailed }: JourneyTim
                 </ul>
               )}
             </div>
-          </li>
+          </motion.li>
         ))}
       </ol>
     </div>

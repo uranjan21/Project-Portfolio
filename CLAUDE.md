@@ -42,10 +42,10 @@ frontend/                  React 18 + Vite + TypeScript client
   src/
     api/client.ts          API client — VITE_API_BASE_URL prefix, all endpoints
     types/portfolio.ts     All domain + API types (mirrors backend Pydantic schemas)
-    context/               PortfolioContext (data fetch + admin token), AdminUIContext
+    context/               PortfolioContext (data fetch + admin token), AudienceContext, ThemeContext, AdminUIContext
     pages/                 One file per route: Home, Services, About, Projects, Blog, etc.
     components/            admin/, cards/, sections/, ui/, chat/, layout/
-    hooks/                 usePageMeta, useAudience
+    hooks/                 usePageMeta, useFocusTrap, useMagnetic
     styles/global.css      Design system — CSS variables on :root, class-based
   index.html               SPA entry point
   vite.config.ts           Proxy /api → localhost:8001
@@ -62,7 +62,7 @@ backend/                   Python FastAPI + Supabase
       admin.py             PUT /api/admin/portfolio (generic section update)
       questions.py         Admin questions CRUD
       messages.py          Admin messages + follow-ups + convert-to-client
-      resume.py            GET /api/resume.pdf (generated PDF)
+      resume.py            GET /api/resume.pdf + /api/resume.docx (generated downloads)
       clients.py           Admin clients CRUD
       projects.py          Admin projects CRUD (with status/client)
       blogs.py             Admin blogs CRUD (with draft/publish)
@@ -72,7 +72,9 @@ backend/                   Python FastAPI + Supabase
       chat.py              FAQ match → OpenAI → unanswered pipeline
       auth.py              Password verify, JWT issue/decode
       notify.py            SMTP email notifications
-      resume.py            PDF generation (reportlab)
+      resume_content.py    Curated resume model (recruiter-facing, single source for both renderers)
+      resume.py            PDF renderer (reportlab)
+      resume_docx.py       DOCX renderer (python-docx)
     migrations/            SQL migration files
   requirements.txt
   .env.example
@@ -87,7 +89,8 @@ Project ID: `djqlpkmvugxkdhfxwviv`
 
 ## Key flows
 
-- **Audience targeting**: `audiences` table drives the hero switcher, headline/pitch/CTA and the Why Me cards on Home. Persists in localStorage; shareable via `/?for=<id>`.
+- **Audience targeting**: `AudienceContext` resolves the visitor type — `?for=<id>` query param → localStorage → first configured audience — and a `WelcomeDialog` (in `Layout`) asks first-time visitors. The `audiences` table drives the hero switcher, headline/pitch/CTA, Why Me cards, plus per-audience `about_bio` and `focus_tags` (reorder projects/skills; migration 003).
+- **Resume downloads**: `resume_content.py` holds a curated resume model separate from portfolio content; `resume.py` (PDF) and `resume_docx.py` (DOCX) both render from it so the two files never drift.
 - **Content editing**: every `PortfolioData` section edits through the schema-driven `EditDialog`. The `PUT /api/admin/portfolio` endpoint with `{section, value}` body handles all generic updates.
 - **Contact pipeline**: POST /api/contact → contact_messages table → admin messages inbox → mark read/replied → add follow-ups → convert to client.
 - **Projects CRM**: projects linked to clients via client_id. Status: received → in_progress → completed → cancelled.
